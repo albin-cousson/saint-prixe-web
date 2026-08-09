@@ -17,7 +17,12 @@ const dog = await sanityClient.fetch(DOG_BY_SLUG_QUERY, { slug });
 if (!dog) return Astro.redirect('/nos-chiens');
 
 const stats = [
-  !dog.deathDate && dog.birthDate && { label: 'Né(e) le', value: formatDateFr(dog.birthDate) },
+  dog.birthDate && {
+    label: dog.deathDate ? 'Période de vie' : 'Né(e) le',
+    value: dog.deathDate
+      ? `${formatDateFr(dog.birthDate)} — ${formatDateFr(dog.deathDate)}`
+      : formatDateFr(dog.birthDate),
+  },
   dog.sire && { label: 'Père', value: dog.sire },
   dog.dam && { label: 'Mère', value: dog.dam },
 ].filter(Boolean) as { label: string; value: string }[];
@@ -29,7 +34,7 @@ const stats = [
   image={dog.photo ? urlFor(dog.photo)?.width(1200).height(630).url() : undefined}
   footerBg="ink"
 >
-  <article class="bg-cream min-h-screen px-6 lg:px-10 py-14 md:py-16">
+  <article class="bg-cream min-h-screen px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-2xl mx-auto text-center">
       <a href="/nos-chiens" class="inline-block mb-6 text-sm text-muted-2 hover:text-gold-text transition-colors">
         ‹ Retour à nos chiens
@@ -86,11 +91,11 @@ const stats = [
 
         {dog.pedigreeFile?.url && (
           <a
-            href={dog.pedigreeFile.url}
+            href={`/.netlify/functions/pedigree?url=${encodeURIComponent(dog.pedigreeFile.url)}&filename=${encodeURIComponent(dog.pedigreeFile.filename)}`}
             download={dog.pedigreeFile.filename}
-            class="inline-flex items-center gap-2 border border-ink/25 hover:border-gold-deep hover:text-gold-text px-6 py-3 text-sm font-semibold transition-colors"
+            class="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gold hover:brightness-95 text-ink px-7 py-3.5 text-sm font-semibold shadow-[0_8px_20px_rgba(0,0,0,0.12)] transition"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="transition-transform duration-300 group-hover:translate-y-0.5">
               <path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
             Télécharger le pedigree
