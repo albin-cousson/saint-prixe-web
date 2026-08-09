@@ -37,26 +37,26 @@ const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
             </p>
             <div>
               <label for="name" class="block text-sm font-medium mb-1">Nom</label>
-              <input id="name" name="name" type="text" required autocomplete="name" class="w-full border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-gold-deep" />
-              <p class="mt-1 text-xs text-red-700 hidden" data-error-for="name">Merci d'indiquer votre nom.</p>
+              <input id="name" name="name" type="text" required autocomplete="name" aria-describedby="name-error" class="w-full border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-gold-deep" />
+              <p id="name-error" class="mt-1 text-xs text-red-700 hidden" data-error-for="name" aria-live="polite">Merci d'indiquer votre nom.</p>
             </div>
             <div>
               <label for="email" class="block text-sm font-medium mb-1">E-mail</label>
-              <input id="email" name="email" type="email" required autocomplete="email" class="w-full border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-gold-deep" />
-              <p class="mt-1 text-xs text-red-700 hidden" data-error-for="email">Merci d'indiquer une adresse e-mail valide.</p>
+              <input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-error" class="w-full border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-gold-deep" />
+              <p id="email-error" class="mt-1 text-xs text-red-700 hidden" data-error-for="email" aria-live="polite">Merci d'indiquer une adresse e-mail valide.</p>
             </div>
             <div>
               <label for="message" class="block text-sm font-medium mb-1">Message</label>
-              <textarea id="message" name="message" rows="6" required class="w-full border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-gold-deep">{prefill}</textarea>
-              <p class="mt-1 text-xs text-red-700 hidden" data-error-for="message">Merci d'ajouter un message.</p>
+              <textarea id="message" name="message" rows="6" required aria-describedby="message-error" class="w-full border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-gold-deep">{prefill}</textarea>
+              <p id="message-error" class="mt-1 text-xs text-red-700 hidden" data-error-for="message" aria-live="polite">Merci d'ajouter un message.</p>
             </div>
             <button type="submit" class="bg-gold hover:brightness-95 text-ink font-semibold px-6 py-3 text-sm transition">
               Envoyer
             </button>
-            <p id="contact-success" class="hidden text-sm text-green-700 mt-2">
+            <p id="contact-success" class="hidden text-sm text-green-700 mt-2" aria-live="polite">
               Merci, votre message a bien été envoyé !
             </p>
-            <p id="contact-fallback" class="hidden text-xs text-muted-2 mt-2">
+            <p id="contact-fallback" class="hidden text-xs text-muted-2 mt-2" aria-live="polite">
               Une erreur est survenue. Écrivez-nous directement à
               <a href={`mailto:${email}`} class="underline hover:text-gold-text">{email}</a>.
             </p>
@@ -71,19 +71,19 @@ const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
                 <span class="w-8 h-8 shrink-0 rounded-full bg-gold/15 text-gold-deep flex items-center justify-center">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 </span>
-                {phone}
+                <span class="min-w-0 break-words">{phone}</span>
               </a>
               <a href={`mailto:${email}`} class="flex items-center gap-3 hover:text-gold-text transition-colors">
                 <span class="w-8 h-8 shrink-0 rounded-full bg-gold/15 text-gold-deep flex items-center justify-center">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
                 </span>
-                {email}
+                <span class="min-w-0 break-words">{email}</span>
               </a>
               <div class="flex items-start gap-3">
                 <span class="w-8 h-8 shrink-0 rounded-full bg-gold/15 text-gold-deep flex items-center justify-center">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.58 7-12a7 7 0 1 0-14 0c0 4.42 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
                 </span>
-                <p>
+                <p class="min-w-0 break-words">
                   {addressLines.map((line) => (
                     <>
                       {line}<br />
@@ -119,6 +119,7 @@ const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
     const field = form?.querySelector(`[name="${name}"]`);
     const msg = form?.querySelector(`[data-error-for="${name}"]`);
     field?.classList.toggle('border-red-700', show);
+    field?.setAttribute('aria-invalid', String(show));
     msg?.classList.toggle('hidden', !show);
   }
 
