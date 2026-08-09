@@ -6,12 +6,13 @@ interface Props {
   name: string;
   photo?: any;
   birthDate?: string;
+  deathDate?: string;
   sire?: string;
   dam?: string;
   titles?: string[];
   href?: string;
 }
-const { name, photo, birthDate, sire, dam, titles, href } = Astro.props;
+const { name, photo, birthDate, deathDate, sire, dam, titles, href } = Astro.props;
 const hasPedigree = birthDate || sire || dam || (titles && titles.length > 0);
 
 const Tag = href ? 'a' : 'div';
@@ -32,7 +33,11 @@ const Tag = href ? 'a' : 'div';
     <h3 class="font-display font-bold text-lg mb-1">{name}</h3>
     {hasPedigree && (
       <div class="text-xs text-muted space-y-0.5 mt-2">
-        {birthDate && <p>Né(e) le {formatDateFr(birthDate)}</p>}
+        {deathDate ? (
+          <p>{birthDate && `${formatDateFr(birthDate)} — `}{formatDateFr(deathDate)}</p>
+        ) : (
+          birthDate && <p>Né(e) le {formatDateFr(birthDate)}</p>
+        )}
         {sire && <p>Père : {sire}</p>}
         {dam && <p>Mère : {dam}</p>}
       </div>

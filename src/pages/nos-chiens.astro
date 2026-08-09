@@ -21,7 +21,7 @@ const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' }
         <h2 class="font-display font-bold text-2xl text-center mb-8">Nos Mâles</h2>
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-8">
           {males.map((d: any) => (
-            <DogCard name={d.name} photo={d.photo} birthDate={d.birthDate} sire={d.sire} dam={d.dam} href={`/nos-chiens/${d.slug?.current}`} />
+            <DogCard name={d.name} photo={d.photo} birthDate={d.birthDate} deathDate={d.deathDate} sire={d.sire} dam={d.dam} href={`/nos-chiens/${d.slug?.current}`} />
           ))}
         </div>
         <p class="text-center">
@@ -35,7 +35,7 @@ const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' }
         <h2 class="font-display font-bold text-2xl text-center mb-8">Nos Femelles</h2>
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-8">
           {femelles.map((d: any) => (
-            <DogCard name={d.name} photo={d.photo} birthDate={d.birthDate} sire={d.sire} dam={d.dam} href={`/nos-chiens/${d.slug?.current}`} />
+            <DogCard name={d.name} photo={d.photo} birthDate={d.birthDate} deathDate={d.deathDate} sire={d.sire} dam={d.dam} href={`/nos-chiens/${d.slug?.current}`} />
           ))}
         </div>
         <p class="text-center">

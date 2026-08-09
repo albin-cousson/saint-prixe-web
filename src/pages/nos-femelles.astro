@@ -21,6 +21,7 @@ const dogs = await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' });
             name={d.name}
             photo={d.photo}
             birthDate={d.birthDate}
+            deathDate={d.deathDate}
             sire={d.sire}
             dam={d.dam}
             href={d.slug?.current ? `/nos-chiens/${d.slug.current}` : undefined}

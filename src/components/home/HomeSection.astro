@@ -126,7 +126,7 @@ const outlineBtnClass = isAlt
       <Flourish class="mx-auto mb-12" />
       <div class="grid gap-8 sm:grid-cols-3 mb-8">
         {dogsList.slice(0, section.limit || 2).map((d: any) => (
-          <DogCard name={d.name} photo={d.photo} birthDate={d.birthDate} sire={d.sire} dam={d.dam} href={`/nos-chiens/${d.slug?.current}`} />
+          <DogCard name={d.name} photo={d.photo} birthDate={d.birthDate} deathDate={d.deathDate} sire={d.sire} dam={d.dam} href={`/nos-chiens/${d.slug?.current}`} />
         ))}
       </div>
       <p class="text-center">
