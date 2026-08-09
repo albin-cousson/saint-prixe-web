@@ -21,8 +21,8 @@
   --font-display: "Libre Baskerville", Georgia, serif;
   --font-body: "din-next-w01-light", Arial, sans-serif;
 
-  /* The live site's own components use --rd:0 (sharp corners) almost everywhere;
-     rounded shapes are reserved for genuinely circular photo framing, done per-component. */
+  /* The live site's own components use --rd:0 (sharp corners) everywhere, including
+     photo framing — no rounded/circular exception anywhere in the design. */
   --radius-none: 0px;
 }
 

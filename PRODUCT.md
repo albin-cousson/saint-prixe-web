@@ -43,7 +43,7 @@ Two things a generic "puppies for sale" site does not do:
 ## Brand Commitments
 
 - Kennel name **"De Saint Prixe"**; on-site tagline **"Élevage de Bearded Collie"** (the tagline names only the Bearded Collie even though the kennel also has a Shih Tzu page — that asymmetry is real, current site content, not an error to silently fix).
-- Visual identity extracted from the real, live Wix site (not invented): ink `#3b3b3b`, cream `#faf8f0`, gold accent `#d9b280`, Libre Baskerville for display type, sharp corners as the default shape language except genuinely circular dog-photo framing, and a small heart-and-line flourish motif under headings, echoing the logo's own flourish.
+- Visual identity extracted from the real, live Wix site (not invented): ink `#3b3b3b`, cream `#faf8f0`, gold accent `#d9b280`, Libre Baskerville for display type, sharp corners as the default shape language everywhere (no circular photo framing, including dog/couple portraits), and a small heart-and-line flourish motif under headings, echoing the logo's own flourish.
 - Breeders' own voice from À propos (quoted, not paraphrased elsewhere): breeding since 2018, "sous le nom De Saint Prixe," priority on temperament/socialization/standard-compliant quality over titles and pedigrees alone.
 
 ## Evidence on Hand

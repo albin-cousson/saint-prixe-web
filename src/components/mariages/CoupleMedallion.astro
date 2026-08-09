@@ -11,12 +11,12 @@ interface Props {
 const { groomPhoto, bridePhoto, groomName, brideName, size = 'card' } = Astro.props;
 
 const isHero = size === 'hero';
-// Explicit width+height (not aspect-[4/3]) — Safari/iOS can miscompute intrinsic size when
-// aspect-ratio is combined with shrink-0 + fixed width in a flex row, which shrink-0 then locks
-// in as an overflow. Explicit dimensions at every breakpoint sidestep that entirely.
+// flex-1 + min-w-0 lets each photo shrink to fit whatever space is actually available
+// (never wider than its card, on any screen), while max-w-* caps how big it gets on
+// larger screens so it still matches the original design at each breakpoint.
 const photoClass = isHero
-  ? 'w-32 h-24 sm:w-40 sm:h-30 md:w-48 md:h-36'
-  : 'w-28 h-21 sm:w-32 sm:h-24 md:w-36 md:h-27';
+  ? 'max-w-32 sm:max-w-40 md:max-w-48'
+  : 'max-w-28 sm:max-w-32 md:max-w-36';
 const ampersandClass = isHero ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl';
 const imgWidth = isHero ? 600 : 400;
 const imgHeight = isHero ? 450 : 300;
@@ -28,7 +28,7 @@ const PhotoTag = isHero ? 'a' : 'div';
     href={isHero && groomPhoto ? urlFor(groomPhoto)?.width(1600).url() : undefined}
     data-lightbox={isHero && groomPhoto ? urlFor(groomPhoto)?.width(1600).url() : undefined}
     data-lightbox-alt={isHero && groomPhoto ? groomName : undefined}
-    class:list={[photoClass, 'shrink-0 overflow-hidden bg-placeholder shadow-[0_8px_20px_rgba(0,0,0,0.16)] block']}
+    class:list={[photoClass, 'flex-1 min-w-0 aspect-[4/3] overflow-hidden bg-placeholder shadow-[0_8px_20px_rgba(0,0,0,0.16)] block']}
   >
     {groomPhoto && (
       <img
@@ -46,7 +46,7 @@ const PhotoTag = isHero ? 'a' : 'div';
     href={isHero && bridePhoto ? urlFor(bridePhoto)?.width(1600).url() : undefined}
     data-lightbox={isHero && bridePhoto ? urlFor(bridePhoto)?.width(1600).url() : undefined}
     data-lightbox-alt={isHero && bridePhoto ? brideName : undefined}
-    class:list={[photoClass, 'shrink-0 overflow-hidden bg-placeholder shadow-[0_8px_20px_rgba(0,0,0,0.16)] block']}
+    class:list={[photoClass, 'flex-1 min-w-0 aspect-[4/3] overflow-hidden bg-placeholder shadow-[0_8px_20px_rgba(0,0,0,0.16)] block']}
   >
     {bridePhoto && (
       <img
