@@ -18,18 +18,39 @@
       <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
     </svg>
   </button>
-  <img id="lightbox-img" src="" alt="" class="max-w-full max-h-full object-contain" />
+  <div
+    id="lightbox-spinner"
+    class="absolute w-10 h-10 rounded-full border-2 border-cream/30 border-t-cream animate-spin"
+  ></div>
+  <img id="lightbox-img" src="" alt="" class="max-w-full max-h-full object-contain opacity-0 transition-opacity duration-200" />
 </div>
 
 <script>
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+  const spinner = document.getElementById('lightbox-spinner');
   const closeBtn = document.getElementById('lightbox-close');
+  const preloaded = new Set<string>();
+
+  function preload(src: string) {
+    if (!src || preloaded.has(src)) return;
+    preloaded.add(src);
+    const img = new Image();
+    img.src = src;
+  }
 
   function openLightbox(src: string, alt: string) {
     if (!lightbox || !lightboxImg) return;
+    const showImage = () => {
+      lightboxImg.classList.remove('opacity-0');
+      spinner?.classList.add('opacity-0');
+    };
+    lightboxImg.classList.add('opacity-0');
+    spinner?.classList.remove('opacity-0');
+    lightboxImg.onload = showImage;
     lightboxImg.src = src;
     lightboxImg.alt = alt;
+    if (lightboxImg.complete && lightboxImg.currentSrc) showImage();
     lightbox.classList.remove('opacity-0', 'pointer-events-none');
     document.documentElement.classList.add('overflow-hidden');
   }
@@ -49,6 +70,15 @@
     const alt = el.getAttribute('data-lightbox-alt') || '';
     openLightbox(src, alt);
   });
+
+  document.addEventListener('mouseenter', (e) => {
+    const el = (e.target as HTMLElement)?.closest?.('[data-lightbox]');
+    if (el) preload(el.getAttribute('data-lightbox') || '');
+  }, true);
+  document.addEventListener('touchstart', (e) => {
+    const el = (e.target as HTMLElement)?.closest('[data-lightbox]');
+    if (el) preload(el.getAttribute('data-lightbox') || '');
+  }, { passive: true });
 
   closeBtn?.addEventListener('click', closeLightbox);
   lightbox?.addEventListener('click', (e) => {
