@@ -19,26 +19,127 @@ for (const p of posts) {
   if (!groups.has(year)) groups.set(year, []);
   groups.get(year)!.push(p);
 }
+// Years already come out newest-first (posts are ordered by publishedAt desc),
+// but keep "Sans date" pinned last regardless of where it falls.
+const years = [...groups.keys()].sort((a, b) => {
+  if (a === 'Sans date') return 1;
+  if (b === 'Sans date') return -1;
+  return Number(b) - Number(a);
+});
 ---
 
 <Layout title={page?.title || 'Actualités'} description="Les actualités de l'élevage De Saint Prixe : expositions, résultats, portées.">
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
       <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Actualités'}</h1>
-      <p class="text-center text-muted max-w-2xl mx-auto mb-14">
+      <p class="text-center text-muted max-w-2xl mx-auto mb-10">
         {page?.intro || 'Retrouvez ici nos résultats et actualités en expositions, régulièrement mis à jour.'}
       </p>
 
+      <div class="max-w-2xl mx-auto mb-14 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-8">
+        <div class="relative w-full sm:w-56">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-0 top-1/2 -translate-y-1/2 text-muted-2 pointer-events-none">
+            <circle cx="11" cy="11" r="7" stroke-linecap="round" />
+            <path d="m20 20-3.5-3.5" stroke-linecap="round" />
+          </svg>
+          <input
+            id="actualites-search"
+            type="search"
+            placeholder="Rechercher un article..."
+            aria-label="Rechercher un article par nom"
+            class="w-full bg-transparent border-b border-border pl-6 pr-1 py-2 text-sm placeholder:text-muted-2 focus:outline-none focus:border-gold-deep transition-colors"
+          />
+        </div>
+
+        {years.length > 1 && (
+          <div role="group" aria-label="Filtrer par année" class="flex items-center gap-0.5 text-xs shrink-0">
+            <button
+              type="button"
+              data-year-filter="all"
+              aria-pressed="true"
+              class="year-filter-btn cursor-pointer px-2.5 py-2.5 uppercase tracking-[0.1em] font-semibold border-b-2 border-gold-deep text-ink transition-colors"
+            >
+              Toutes
+            </button>
+            {years.map((year) => (
+              <button
+                type="button"
+                data-year-filter={year}
+                aria-pressed="false"
+                class="year-filter-btn cursor-pointer px-2.5 py-2.5 uppercase tracking-[0.1em] font-semibold border-b-2 border-transparent text-muted-2 hover:text-ink transition-colors"
+              >
+                {year}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {[...groups.entries()].map(([year, yearPosts]) => (
-        <div class="mb-14">
+        <div class="mb-14" data-year-group={year}>
           <h2 class="font-display font-bold text-xl mb-6 pb-2 border-b border-border">{year}</h2>
           <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {yearPosts.map((p: any) => (
-              <PostCard post={p} />
+              <div class="contents" data-post-title={p.title}>
+                <PostCard post={p} />
+              </div>
             ))}
           </div>
         </div>
       ))}
+
+      <p id="actualites-empty" class="hidden text-center text-muted py-10">
+        Aucun article ne correspond à votre recherche.
+      </p>
     </div>
   </section>
 </Layout>
+
+<script>
+  const input = document.getElementById('actualites-search') as HTMLInputElement | null;
+  const yearButtons = document.querySelectorAll<HTMLButtonElement>('.year-filter-btn');
+  const yearGroups = document.querySelectorAll<HTMLElement>('[data-year-group]');
+  const emptyMsg = document.getElementById('actualites-empty');
+
+  let activeYear = 'all';
+
+  function applyFilters() {
+    const query = (input?.value ?? '').trim().toLowerCase();
+    let anyVisible = false;
+
+    yearGroups.forEach((group) => {
+      const groupYear = group.dataset.yearGroup ?? '';
+      const yearMatches = activeYear === 'all' || groupYear === activeYear;
+      let groupHasVisible = false;
+
+      group.querySelectorAll<HTMLElement>('[data-post-title]').forEach((card) => {
+        const titleMatches = (card.dataset.postTitle ?? '').toLowerCase().includes(query);
+        const visible = yearMatches && titleMatches;
+        card.style.display = visible ? '' : 'none';
+        if (visible) groupHasVisible = true;
+      });
+
+      group.style.display = groupHasVisible ? '' : 'none';
+      if (groupHasVisible) anyVisible = true;
+    });
+
+    emptyMsg?.classList.toggle('hidden', anyVisible);
+  }
+
+  input?.addEventListener('input', applyFilters);
+
+  yearButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeYear = btn.dataset.yearFilter ?? 'all';
+      yearButtons.forEach((b) => {
+        const isActive = b === btn;
+        b.setAttribute('aria-pressed', String(isActive));
+        b.classList.toggle('border-gold-deep', isActive);
+        b.classList.toggle('border-transparent', !isActive);
+        b.classList.toggle('text-ink', isActive);
+        b.classList.toggle('text-muted-2', !isActive);
+      });
+      applyFilters();
+    });
+  });
+</script>
