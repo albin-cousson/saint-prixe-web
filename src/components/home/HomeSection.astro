@@ -2,8 +2,7 @@
 import Flourish from '../Flourish.astro';
 import MariageCard from '../mariages/MariageCard.astro';
 import DogCard from '../dogs/DogCard.astro';
-import { urlFor } from '../../lib/sanity/image';
-import { formatDateFr } from '../../lib/status';
+import PostCard from '../actualites/PostCard.astro';
 
 interface Props {
   section: any;
@@ -20,6 +19,7 @@ const shownMariages = mariages.slice(0, section.limit || 3);
 const dogsList = section._type === 'malesSection' ? males : section._type === 'femellesSection' ? femelles : [];
 const dogsHeadingDefault = section._type === 'malesSection' ? 'Nos Mâles' : 'Nos Femelles';
 const dogsHrefDefault = section._type === 'malesSection' ? '/nos-males' : '/nos-femelles';
+const dogsCtaDefault = section._type === 'malesSection' ? 'Tous les découvrir' : 'Toutes les découvrir';
 
 // Sections alternate cream / anthracite (ink) backgrounds automatically, cream first.
 const isAlt = index % 2 === 1;
@@ -92,22 +92,7 @@ const outlineBtnClass = isAlt
       <Flourish class="mx-auto mb-12" />
       <div class="grid gap-8 sm:grid-cols-3">
         {recentPosts.slice(0, section.limit || 3).map((p: any) => (
-          <a href={`/actualites/${p.slug.current}`} class="group block bg-white border border-border overflow-hidden">
-            <div class="aspect-[4/3] overflow-hidden bg-placeholder">
-              {p.coverImage && (
-                <img
-                  src={urlFor(p.coverImage)?.width(500).height(375).url()}
-                  alt={p.title}
-                  loading="lazy"
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              )}
-            </div>
-            <div class="p-5">
-              <h3 class="font-display font-bold text-base mb-1 text-ink">{p.title}</h3>
-              {p.publishedAt && <p class="text-xs text-muted-2">{formatDateFr(p.publishedAt)}</p>}
-            </div>
-          </a>
+          <PostCard post={p} />
         ))}
       </div>
       <p class="text-center mt-10">
@@ -131,7 +116,7 @@ const outlineBtnClass = isAlt
       </div>
       <p class="text-center">
         <a href={section.ctaHref || dogsHrefDefault} class:list={outlineBtnClass}>
-          {section.ctaLabel || 'Tous les découvrir'}
+          {section.ctaLabel || dogsCtaDefault}
         </a>
       </p>
     </div>
