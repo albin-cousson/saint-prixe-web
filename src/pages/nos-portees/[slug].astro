@@ -85,10 +85,14 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
       ) : (
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {puppies.map((p: any) => {
-            const images = [p.photo, ...(p.gallery || [])]
-              .filter(Boolean)
-              .map((img: any) => urlFor(img)?.width(700).height(875).url())
-              .filter(Boolean) as string[];
+            const media = [
+              p.photo && { type: 'image' as const, url: urlFor(p.photo)?.width(700).height(875).url() },
+              ...(p.gallery || []).map((item: any) =>
+                item._type === 'file'
+                  ? item.url && { type: 'video' as const, url: item.url }
+                  : { type: 'image' as const, url: urlFor(item)?.width(700).height(875).url() },
+              ),
+            ].filter((m): m is { type: 'image' | 'video'; url: string } => Boolean(m && m.url));
             return (
               <PuppyCarousel
                 client:visible
@@ -98,7 +102,7 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
                 birthDate={p.birthDate}
                 status={p.status}
                 description={p.description}
-                images={images}
+                media={media}
               />
             );
           })}

@@ -1,4 +1,7 @@
 import {defineField, defineType} from 'sanity'
+import {HeicImageInput} from '../components/HeicImageInput'
+import {galleryOf} from '../lib/galleryField'
+import {requireImageAsset} from '../lib/requireImageAsset'
 
 export default defineType({
   name: 'chiot',
@@ -21,12 +24,19 @@ export default defineType({
     }),
     defineField({name: 'color', title: 'Robe / couleur', type: 'string'}),
     defineField({name: 'birthDate', title: 'Date de naissance', type: 'date'}),
-    defineField({name: 'photo', title: 'Photo principale', type: 'image', options: {hotspot: true}}),
+    defineField({
+      name: 'photo',
+      title: 'Photo principale',
+      type: 'image',
+      options: {hotspot: true},
+      components: {input: HeicImageInput},
+      validation: requireImageAsset,
+    }),
     defineField({
       name: 'gallery',
-      title: 'Galerie',
+      title: 'Galerie (photos et vidéos)',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: galleryOf,
     }),
     defineField({
       name: 'status',

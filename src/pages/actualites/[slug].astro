@@ -75,16 +75,22 @@ const articleSchema = {
           <div class="mt-10">
             <h2 class="font-display font-bold text-lg mb-4">Galerie</h2>
             <div class="columns-2 sm:columns-3 gap-3 space-y-3">
-              {post.gallery.map((img: any) => (
-                <a
-                  href={urlFor(img)?.width(1600).url()}
-                  data-lightbox={urlFor(img)?.width(1600).url()}
-                  data-lightbox-alt={`Photo — ${post.title}`}
-                  class="block bg-placeholder"
-                >
-                  <img src={urlFor(img)?.width(600).url()} alt={`Photo — ${post.title}`} loading="lazy" class="w-full block" />
-                </a>
-              ))}
+              {post.gallery.map((item: any) =>
+                item._type === 'file' ? (
+                  item.url && (
+                    <video src={item.url} controls preload="metadata" class="w-full block bg-ink" />
+                  )
+                ) : (
+                  <a
+                    href={urlFor(item)?.width(1600).url()}
+                    data-lightbox={urlFor(item)?.width(1600).url()}
+                    data-lightbox-alt={`Photo — ${post.title}`}
+                    class="block bg-placeholder"
+                  >
+                    <img src={urlFor(item)?.width(600).url()} alt={`Photo — ${post.title}`} loading="lazy" class="w-full block" />
+                  </a>
+                ),
+              )}
             </div>
           </div>
         )}

@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { isAvailable, formatDateFr } from '../../lib/status';
 
+interface MediaItem {
+  type: 'image' | 'video';
+  url: string;
+}
+
 interface Props {
   title: string;
   gender?: string;
@@ -8,17 +13,18 @@ interface Props {
   birthDate?: string;
   status?: string;
   description?: string;
-  images: string[]; // pre-resolved Sanity CDN URLs
+  media: MediaItem[]; // pre-resolved Sanity CDN URLs (photos) / file URLs (videos)
 }
 
-export default function PuppyCarousel({ title, gender, color, birthDate, status, description, images }: Props) {
+export default function PuppyCarousel({ title, gender, color, birthDate, status, description, media }: Props) {
   const [index, setIndex] = useState(0);
   const ok = isAvailable(status);
-  const safeImages = images.length ? images : [''];
-  const current = Math.min(index, safeImages.length - 1);
+  const safeMedia = media.length ? media : [{ type: 'image' as const, url: '' }];
+  const current = Math.min(index, safeMedia.length - 1);
+  const currentItem = safeMedia[current];
 
   const step = (delta: number) => {
-    setIndex((i) => (i + delta + safeImages.length) % safeImages.length);
+    setIndex((i) => (i + delta + safeMedia.length) % safeMedia.length);
   };
 
   const meta = [gender, color, birthDate && `Né(e) le ${formatDateFr(birthDate)}`].filter(Boolean).join(' · ');
@@ -26,17 +32,26 @@ export default function PuppyCarousel({ title, gender, color, birthDate, status,
   return (
     <div className={ok ? 'text-center' : 'text-center opacity-100'}>
       <div className="relative overflow-hidden bg-placeholder aspect-[4/5]">
-        {safeImages[current] && (
-          <img
-            src={safeImages[current]}
-            alt={title}
-            loading="lazy"
-            data-lightbox={safeImages[current]}
-            className={`w-full h-full object-cover cursor-pointer ${!ok ? 'grayscale opacity-65' : ''}`}
+        {currentItem.url && currentItem.type === 'video' ? (
+          <video
+            src={currentItem.url}
+            controls
+            preload="metadata"
+            className={`w-full h-full object-contain bg-ink ${!ok ? 'grayscale opacity-65' : ''}`}
           />
+        ) : (
+          currentItem.url && (
+            <img
+              src={currentItem.url}
+              alt={title}
+              loading="lazy"
+              data-lightbox={currentItem.url}
+              className={`w-full h-full object-cover cursor-pointer ${!ok ? 'grayscale opacity-65' : ''}`}
+            />
+          )
         )}
 
-        {safeImages.length > 1 && (
+        {safeMedia.length > 1 && (
           <>
             <button
               type="button"
@@ -56,7 +71,7 @@ export default function PuppyCarousel({ title, gender, color, birthDate, status,
             </button>
             {ok && (
               <div className="absolute top-2 inset-x-0 flex justify-center gap-1.5">
-                {safeImages.map((_, i) => (
+                {safeMedia.map((_, i) => (
                   <span
                     key={i}
                     className={`w-1.5 h-1.5 rounded-full ${i === current ? 'bg-white' : 'bg-white/55'}`}

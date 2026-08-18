@@ -6,7 +6,9 @@ import { sanityClient } from 'sanity:client';
 import { PORTFOLIO_PAGE_QUERY } from '../lib/sanity/queries';
 
 const page = await sanityClient.fetch(PORTFOLIO_PAGE_QUERY);
-const images = (page?.images || []).filter((img: any) => (img.width ?? 0) > 100);
+// Videos have no width metadata (that field only exists on image assets), so only apply the
+// "broken/empty item" width filter to photos — real video items always pass through.
+const images = (page?.images || []).filter((img: any) => img._type === 'file' || (img.width ?? 0) > 100);
 ---
 
 <Layout title={page?.title || 'Portfolio'} description="Portfolio photo de l'élevage De Saint Prixe." footerBg="ink">
@@ -17,21 +19,25 @@ const images = (page?.images || []).filter((img: any) => (img.width ?? 0) > 100)
       </h1>
       {page?.intro && <p class="text-center text-muted max-w-2xl mx-auto mb-14">{page.intro}</p>}
       <div class="columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
-        {images.map((img: any, i: number) => (
-          <a
-            href={urlFor(img)?.width(1600).url()}
-            data-lightbox={urlFor(img)?.width(1600).url()}
-            data-lightbox-alt={`Portfolio De Saint Prixe — photo ${i + 1}`}
-            class="block"
-          >
-            <img
-              src={urlFor(img)?.width(600).url()}
-              alt={`Portfolio De Saint Prixe — photo ${i + 1}`}
-              loading="lazy"
-              class="w-full block"
-            />
-          </a>
-        ))}
+        {images.map((img: any, i: number) =>
+          img._type === 'file' ? (
+            img.url && <video src={img.url} controls preload="metadata" class="w-full block bg-ink" />
+          ) : (
+            <a
+              href={urlFor(img)?.width(1600).url()}
+              data-lightbox={urlFor(img)?.width(1600).url()}
+              data-lightbox-alt={`Portfolio De Saint Prixe — photo ${i + 1}`}
+              class="block"
+            >
+              <img
+                src={urlFor(img)?.width(600).url()}
+                alt={`Portfolio De Saint Prixe — photo ${i + 1}`}
+                loading="lazy"
+                class="w-full block"
+              />
+            </a>
+          ),
+        )}
       </div>
     </div>
   </section>

@@ -1,5 +1,8 @@
 import {defineField, defineType} from 'sanity'
+import {HeicImageInput} from '../components/HeicImageInput'
+import {galleryOf} from '../lib/galleryField'
 import {isUniqueSlug} from '../lib/isUniqueSlug'
+import {requireImageAsset} from '../lib/requireImageAsset'
 
 export default defineType({
   name: 'blogPost',
@@ -22,12 +25,14 @@ export default defineType({
       type: 'image',
       description: 'Cliquez sur la photo pour ajuster le cadrage — l\'aperçu "Carte (4:3)" montre exactement comment elle apparaîtra sur la liste des actualités.',
       options: {hotspot: {previews: [{title: 'Carte (4:3)', aspectRatio: 4 / 3}]}},
+      components: {input: HeicImageInput},
+      validation: requireImageAsset,
     }),
     defineField({
       name: 'gallery',
-      title: 'Galerie (photos secondaires)',
+      title: 'Galerie (photos et vidéos secondaires)',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: galleryOf,
     }),
     defineField({name: 'excerpt', title: 'Résumé (liste des articles)', type: 'text'}),
     defineField({
@@ -36,7 +41,7 @@ export default defineType({
       type: 'array',
       of: [
         {type: 'block'},
-        {type: 'image', options: {hotspot: true}},
+        {type: 'image', options: {hotspot: true}, components: {input: HeicImageInput}, validation: requireImageAsset},
       ],
     }),
   ],

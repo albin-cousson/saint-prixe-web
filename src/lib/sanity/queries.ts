@@ -1,5 +1,16 @@
 import { defineQuery } from 'groq';
 
+/** Shared projection for gallery arrays (`of: [image, file]` in the Studio schema — see
+ * studio/lib/galleryField.ts): images pass through as-is for urlFor(), file/video items get
+ * their asset resolved to a direct URL + mimeType since urlFor() only handles images. */
+const GALLERY_PROJECTION = `[]{
+  ...,
+  _type == "file" => {
+    "url": asset->url,
+    "mimeType": asset->mimeType
+  }
+}`;
+
 export const SITE_SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings"][0]`);
 
 export const HOME_PAGE_QUERY = defineQuery(`*[_type == "homePage"][0]`);
@@ -10,7 +21,11 @@ export const PORTFOLIO_PAGE_QUERY = defineQuery(`
     ...,
     "images": images[]{
       ...,
-      "width": asset->metadata.dimensions.width
+      "width": asset->metadata.dimensions.width,
+      _type == "file" => {
+        "url": asset->url,
+        "mimeType": asset->mimeType
+      }
     }
   }
 `);
@@ -27,6 +42,7 @@ export const DOG_SLUGS_QUERY = defineQuery(`*[_type == "dog" && defined(slug.cur
 export const DOG_BY_SLUG_QUERY = defineQuery(`
   *[_type == "dog" && slug.current == $slug][0] {
     ...,
+    "gallery": gallery${GALLERY_PROJECTION},
     pedigreeFile {
       ...,
       "url": asset->url,
@@ -45,7 +61,11 @@ export const MARIAGES_WITH_CHIOTS_QUERY = defineQuery(`
 export const MARIAGE_BY_SLUG_QUERY = defineQuery(`
   *[_type == "mariage" && slug.current == $slug][0] {
     ...,
-    "puppies": *[_type == "chiot" && references(^._id)]
+    "gallery": gallery${GALLERY_PROJECTION},
+    "puppies": *[_type == "chiot" && references(^._id)]{
+      ...,
+      "gallery": gallery${GALLERY_PROJECTION}
+    }
   }
 `);
 
@@ -56,9 +76,12 @@ export const MARIAGE_SLUGS_QUERY = defineQuery(
 export const BLOG_POSTS_QUERY = defineQuery(
   `*[_type == "blogPost"] | order(publishedAt desc)`,
 );
-export const BLOG_POST_BY_SLUG_QUERY = defineQuery(
-  `*[_type == "blogPost" && slug.current == $slug][0]`,
-);
+export const BLOG_POST_BY_SLUG_QUERY = defineQuery(`
+  *[_type == "blogPost" && slug.current == $slug][0] {
+    ...,
+    "gallery": gallery${GALLERY_PROJECTION}
+  }
+`);
 export const BLOG_POST_SLUGS_QUERY = defineQuery(
   `*[_type == "blogPost" && defined(slug.current)]{ "slug": slug.current }`,
 );

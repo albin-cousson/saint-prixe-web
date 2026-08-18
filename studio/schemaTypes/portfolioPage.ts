@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {galleryOf} from '../lib/galleryField'
 
 export default defineType({
   name: 'portfolioPage',
@@ -9,9 +10,9 @@ export default defineType({
     defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
     defineField({
       name: 'images',
-      title: 'Galerie',
+      title: 'Galerie (photos et vidéos)',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: galleryOf,
     }),
   ],
   preview: {

@@ -1,6 +1,10 @@
 import {defineField, defineType} from 'sanity'
-import {isUniqueSlug} from '../lib/isUniqueSlug'
+import {HeicImageInput} from '../components/HeicImageInput'
 import {TitlesInput} from '../components/TitlesInput'
+import {galleryOf} from '../lib/galleryField'
+import {isUniqueSlug} from '../lib/isUniqueSlug'
+import {requireFileAsset} from '../lib/requireFileAsset'
+import {requireImageAsset} from '../lib/requireImageAsset'
 
 export default defineType({
   name: 'dog',
@@ -21,12 +25,14 @@ export default defineType({
       type: 'image',
       description: 'Cliquez sur la photo pour ajuster le cadrage — l\'aperçu "Carte (4:3)" montre exactement comment elle apparaîtra sur Nos Chiens / Nos Mâles / Nos Femelles.',
       options: {hotspot: {previews: [{title: 'Carte (4:3)', aspectRatio: 4 / 3}]}},
+      components: {input: HeicImageInput},
+      validation: requireImageAsset,
     }),
     defineField({
       name: 'gallery',
-      title: 'Galerie',
+      title: 'Galerie (photos et vidéos)',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: galleryOf,
     }),
     defineField({name: 'birthDate', title: 'Date de naissance', type: 'date'}),
     defineField({name: 'deathDate', title: 'Date de décès', type: 'date', description: 'Laisser vide si le chien est toujours parmi nous.'}),
@@ -49,9 +55,11 @@ export default defineType({
     }),
     defineField({
       name: 'pedigreeFile',
-      title: 'Document pedigree (PDF)',
+      title: 'Document pedigree (PDF ou image)',
       type: 'file',
-      description: 'Facultatif — si présent, un bouton de téléchargement apparaît sur la fiche du chien.',
+      description: 'Facultatif — si présent, un bouton de téléchargement apparaît sur la fiche du chien. PDF ou image (JPEG, PNG…) acceptés.',
+      options: {accept: 'application/pdf,image/*'},
+      validation: requireFileAsset({label: 'PDF ou image', anyOf: [{mimeType: 'application/pdf'}, {mimePrefix: 'image/'}]}),
     }),
     defineField({
       name: 'slug',
