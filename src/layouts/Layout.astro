@@ -60,6 +60,12 @@ const localBusinessSchema = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- PNG fallbacks alongside the SVG: Google Search's favicon crawler is documented as
+         supporting any format, but in practice is more reliable with a PNG at 48px+ than
+         with SVG-only — see public/favicon.svg for the source vector. -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Loaded async (preload + swap) so this stylesheet never blocks first paint;
          font-display=swap in the URL means text renders immediately with a fallback
