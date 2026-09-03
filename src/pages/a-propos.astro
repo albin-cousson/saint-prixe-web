@@ -13,8 +13,8 @@ const lastSectionIsAlt = rest.length > 0 ? (rest.length - 1) % 2 === 0 : false;
 ---
 
 <Layout
-  title={page?.title || 'À propos'}
-  description="À propos de l'élevage De Saint Prixe."
+  title={page?.seoTitle || 'À propos — Élevage de Bearded Collie en Alsace'}
+  description={page?.seoDescription || "Élevage familial De Saint Prixe : notre histoire, notre philosophie et notre passion pour le Bearded Collie, en Alsace (Haut-Rhin) depuis 2018."}
   image={intro?.image ? urlFor(intro.image)?.width(1200).height(630).url() : undefined}
   footerBg={lastSectionIsAlt ? 'cream' : 'ink'}
 >

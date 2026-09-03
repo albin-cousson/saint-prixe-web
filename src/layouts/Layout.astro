@@ -15,7 +15,7 @@ interface Props {
 }
 const {
   title,
-  description = 'Élevage De Saint Prixe — Bearded Collie et Shih Tzu, en Alsace.',
+  description = 'Élevage De Saint Prixe — Bearded Collie et Shih Tzu, en Alsace (Haut-Rhin).',
   image,
   footerBg = 'ink',
   type = 'website',
@@ -43,8 +43,10 @@ const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   name: siteName,
-  description: settings?.tagline || 'Élevage de Bearded Collies',
+  description: settings?.tagline || 'Élevage familial de Bearded Collie en Alsace (Haut-Rhin)',
   url: Astro.site?.toString(),
+  knowsAbout: 'Bearded Collie',
+  areaServed: ['Alsace', 'Haut-Rhin', 'Grand Est', 'France'],
   ...(settings?.phone && { telephone: settings.phone }),
   ...(settings?.email && { email: settings.email }),
   address: addressSchema,

@@ -9,12 +9,15 @@ const males = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Mâle' })).sl
 const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' })).slice(0, 3);
 ---
 
-<Layout title={page?.title || 'Nos Chiens'} description="Découvrez les Bearded Collies de l'élevage De Saint Prixe.">
+<Layout
+  title={page?.seoTitle || 'Nos Bearded Collies — Chiens de l\'élevage en Alsace'}
+  description={page?.seoDescription || "Découvrez les Bearded Collies de l'élevage De Saint Prixe en Alsace (Haut-Rhin) : mâles, femelles, pedigree LOF et caractère de la race."}
+>
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
-      <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Chiens'}</h1>
+      <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Bearded Collies'}</h1>
       <p class="text-center text-muted max-w-2xl mx-auto mb-14">
-        {page?.intro || "Nos chiens sont au cœur de notre passion et de nos projets d'élevage."}
+        {page?.intro || "Nos Bearded Collies sont au cœur de notre passion et de nos projets d'élevage, au sein de notre élevage familial en Alsace (Haut-Rhin)."}
       </p>
 
       <div class="mb-16">

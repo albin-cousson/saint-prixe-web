@@ -16,7 +16,11 @@ const mapQuery = encodeURIComponent(addressLines.join(', '));
 const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
 ---
 
-<Layout title={page?.title || 'Contact'} description="Contactez l'élevage De Saint Prixe." footerBg="ink">
+<Layout
+  title={page?.seoTitle || 'Contact — Élevage de Bearded Collie en Alsace'}
+  description={page?.seoDescription || "Contactez l'élevage De Saint Prixe, Bearded Collie à Raedersheim (68, Haut-Rhin, Alsace). Par téléphone, e-mail ou via notre formulaire."}
+  footerBg="ink"
+>
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-5xl mx-auto">
       <div class="text-center mb-14">

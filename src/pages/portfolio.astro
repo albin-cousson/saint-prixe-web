@@ -11,7 +11,11 @@ const page = await sanityClient.fetch(PORTFOLIO_PAGE_QUERY);
 const images = (page?.images || []).filter((img: any) => img._type === 'file' || (img.width ?? 0) > 100);
 ---
 
-<Layout title={page?.title || 'Portfolio'} description="Portfolio photo de l'élevage De Saint Prixe." footerBg="ink">
+<Layout
+  title={page?.seoTitle || 'Portfolio photo — Élevage de Bearded Collie De Saint Prixe'}
+  description={page?.seoDescription || 'Portfolio photo de nos Bearded Collies : chiens, chiots et moments de vie à l\'élevage De Saint Prixe, en Alsace.'}
+  footerBg="ink"
+>
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
       <h1 class:list={['font-display font-bold text-3xl md:text-4xl text-center', page?.intro ? 'mb-3' : 'mb-14']}>

@@ -18,8 +18,8 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
 ---
 
 <Layout
-  title="Élevage de Bearded Collies en Alsace"
-  description="Élevage familial De Saint Prixe, Bearded Collies en Alsace (68) : découvrez nos chiens, nos portées et nos chiots disponibles."
+  title={home?.seoTitle || 'Élevage de Bearded Collie en Alsace (Haut-Rhin)'}
+  description={home?.seoDescription || "Élevage familial De Saint Prixe, Bearded Collie en Alsace (Haut-Rhin, 68). Chiots LOF, pedigree soigné : découvrez nos chiens, nos portées et nos chiots disponibles."}
   image={home?.heroImage ? urlFor(home.heroImage)?.width(1200).height(630).url() : undefined}
   footerBg="ink"
 >

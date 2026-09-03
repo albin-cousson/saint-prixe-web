@@ -8,10 +8,13 @@ const page = await sanityClient.fetch(NOS_PORTEES_PAGE_QUERY);
 const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
 ---
 
-<Layout title={page?.title || 'Nos Portées'} description="Découvrez nos couples et les chiots disponibles à l'élevage De Saint Prixe.">
+<Layout
+  title={page?.seoTitle || 'Chiots Bearded Collie disponibles — Nos Portées'}
+  description={page?.seoDescription || "Chiots Bearded Collie LOF disponibles à l'élevage De Saint Prixe, en Alsace (Haut-Rhin). Découvrez nos couples, nos portées en cours et nos prochaines naissances."}
+>
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
-      <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Portées'}</h1>
+      <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Portées de Bearded Collie'}</h1>
       <p class="text-center text-muted max-w-2xl mx-auto mb-14">
         {page?.intro || 'Découvrez nos couples et les chiots disponibles, portée par portée.'}
       </p>
