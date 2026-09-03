@@ -2,3 +2,9 @@
   command = "npm run build"
   publish = "dist"
   functions = "netlify/functions"
+
+# Runs every minute to collapse a burst of Sanity webhook calls ("Publier
+# tout" fires one per document) into a single deploy — see
+# netlify/functions/deploy-debounce-check.mjs.
+[functions."deploy-debounce-check"]
+  schedule = "* * * * *"
