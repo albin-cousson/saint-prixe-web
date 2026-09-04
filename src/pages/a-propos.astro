@@ -7,37 +7,27 @@ import { sanityClient } from 'sanity:client';
 import { ABOUT_PAGE_QUERY } from '../lib/sanity/queries';
 
 const page = await sanityClient.fetch(ABOUT_PAGE_QUERY);
-const sections = page?.sections || [];
-const [intro, ...rest] = sections;
+const rest = page?.sections || [];
 const lastSectionIsAlt = rest.length > 0 ? (rest.length - 1) % 2 === 0 : false;
 ---
 
 <Layout
   title={page?.seoTitle || 'À propos — Élevage de Bearded Collie en Alsace'}
   description={page?.seoDescription || "Élevage familial De Saint Prixe : notre histoire, notre philosophie et notre passion pour le Bearded Collie, en Alsace (Haut-Rhin) depuis 2018."}
-  image={intro?.image ? urlFor(intro.image)?.width(1200).height(630).url() : undefined}
   footerBg={lastSectionIsAlt ? 'cream' : 'ink'}
+  breadcrumbs={[{ name: 'À propos', path: '/a-propos' }]}
 >
-  {intro && (
+  {(page?.title || page?.intro) && (
     <section class="bg-cream px-6 lg:px-10 py-20 md:py-28 text-center">
       <div class="max-w-2xl mx-auto">
-        {intro.heading && (
+        {page?.title && (
           <h1 class="font-display font-bold text-3xl md:text-4xl lg:text-5xl uppercase leading-tight mb-4">
-            {intro.heading}
+            {page.title}
           </h1>
         )}
         <Flourish class="mx-auto mb-8" />
-        {intro.image && (
-          <div class="mb-10 aspect-[16/9] overflow-hidden bg-placeholder">
-            <img
-              src={urlFor(intro.image)?.width(1200).height(675).url()}
-              alt={intro.heading || "L'élevage De Saint Prixe"}
-              class="w-full h-full object-cover"
-            />
-          </div>
-        )}
         <div class="prose-body text-lg leading-relaxed text-muted">
-          <PortableText value={intro.body} />
+          <PortableText value={page.intro} />
         </div>
       </div>
     </section>

@@ -7,6 +7,13 @@ export default defineType({
   fields: [
     defineField({name: 'title', title: 'Titre', type: 'string'}),
     defineField({
+      name: 'intro',
+      title: "Texte d'introduction",
+      type: 'array',
+      of: [{type: 'block'}],
+    }),
+    defineField({name: 'sections', title: 'Sections', type: 'array', of: [{type: 'pageSection'}]}),
+    defineField({
       name: 'seoTitle',
       title: 'Titre SEO (balise <title> / Google)',
       description:
@@ -21,7 +28,6 @@ export default defineType({
       type: 'text',
       rows: 3,
     }),
-    defineField({name: 'sections', title: 'Sections', type: 'array', of: [{type: 'pageSection'}]}),
   ],
   preview: {
     prepare: () => ({title: 'Page À propos'}),
