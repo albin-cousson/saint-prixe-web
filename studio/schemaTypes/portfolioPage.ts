@@ -9,6 +9,12 @@ export default defineType({
     defineField({name: 'title', title: 'Titre', type: 'string'}),
     defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
     defineField({
+      name: 'images',
+      title: 'Galerie (photos et vidéos)',
+      type: 'array',
+      of: galleryOf,
+    }),
+    defineField({
       name: 'seoTitle',
       title: 'Titre SEO (balise <title> / Google)',
       description:
@@ -22,12 +28,6 @@ export default defineType({
         "Optionnel — le résumé affiché sous le titre dans les résultats Google (150-160 caractères recommandés). Laisser vide pour utiliser la description par défaut.",
       type: 'text',
       rows: 3,
-    }),
-    defineField({
-      name: 'images',
-      title: 'Galerie (photos et vidéos)',
-      type: 'array',
-      of: galleryOf,
     }),
   ],
   preview: {

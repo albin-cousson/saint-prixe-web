@@ -11,6 +11,20 @@ export default defineType({
     defineField({name: 'heroButtonLabel', title: 'Texte du bouton', type: 'string'}),
     defineField({name: 'heroButtonHref', title: 'Lien du bouton', type: 'string'}),
     defineField({
+      name: 'sections',
+      title: 'Sections de la page',
+      description:
+        'Sections additionnelles (texte libre) et sections liées à une page (contenus dynamiques : actualités, portées, mâles, femelles). L\'ordre ici détermine l\'ordre d\'affichage sur la page.',
+      type: 'array',
+      of: [
+        {type: 'pageSection', title: 'Section additionnelle'},
+        {type: 'actualitesSection', title: 'Actualités'},
+        {type: 'mariagesSection', title: 'Nos portées'},
+        {type: 'malesSection', title: 'Nos mâles'},
+        {type: 'femellesSection', title: 'Nos femelles'},
+      ],
+    }),
+    defineField({
       name: 'seoTitle',
       title: 'Titre SEO (balise <title> / Google)',
       description:
@@ -24,20 +38,6 @@ export default defineType({
         "Optionnel — le résumé affiché sous le titre dans les résultats Google (150-160 caractères recommandés). Laisser vide pour utiliser la description par défaut.",
       type: 'text',
       rows: 3,
-    }),
-    defineField({
-      name: 'sections',
-      title: 'Sections de la page',
-      description:
-        'Sections additionnelles (texte libre) et sections liées à une page (contenus dynamiques : actualités, portées, mâles, femelles). L\'ordre ici détermine l\'ordre d\'affichage sur la page.',
-      type: 'array',
-      of: [
-        {type: 'pageSection', title: 'Section additionnelle'},
-        {type: 'actualitesSection', title: 'Actualités'},
-        {type: 'mariagesSection', title: 'Nos portées'},
-        {type: 'malesSection', title: 'Nos mâles'},
-        {type: 'femellesSection', title: 'Nos femelles'},
-      ],
     }),
   ],
   preview: {

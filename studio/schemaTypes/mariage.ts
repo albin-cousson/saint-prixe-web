@@ -41,6 +41,7 @@ export default defineType({
       components: {input: HeicImageInput},
       validation: requireImageAsset,
     }),
+    defineField({name: 'litterDate', title: 'Date de naissance des chiots', type: 'date'}),
     defineField({
       name: 'gallery',
       title: 'Galerie (photos et vidéos)',
@@ -48,7 +49,6 @@ export default defineType({
       of: galleryOf,
     }),
     defineField({name: 'description', title: 'Description', type: 'text'}),
-    defineField({name: 'litterDate', title: 'Date de naissance des chiots', type: 'date'}),
   ],
   preview: {
     select: {title: 'title', media: 'dogGroomPhoto'},
