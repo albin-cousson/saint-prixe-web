@@ -11,9 +11,10 @@ interface Props {
   recentPosts: any[];
   males: any[];
   femelles: any[];
+  mariageCardCtaLabel?: string;
 }
 
-const { section, index, mariages, recentPosts, males, femelles } = Astro.props;
+const { section, index, mariages, recentPosts, males, femelles, mariageCardCtaLabel } = Astro.props;
 
 const shownMariages = mariages.slice(0, section.limit || 3);
 const dogsList = section._type === 'malesSection' ? males : section._type === 'femellesSection' ? femelles : [];
@@ -73,6 +74,7 @@ const outlineBtnClass = isAlt
             description={m.description}
             litterDate={m.litterDate}
             puppies={m.puppies || []}
+            ctaLabel={mariageCardCtaLabel}
           />
         ))}
       </div>

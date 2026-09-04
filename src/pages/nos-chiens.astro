@@ -12,12 +12,18 @@ const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' }
 <Layout
   title={page?.seoTitle || 'Nos Bearded Collies — Chiens de l\'élevage en Alsace'}
   description={page?.seoDescription || "Découvrez les Bearded Collies de l'élevage De Saint Prixe en Alsace (Haut-Rhin) : mâles, femelles, pedigree LOF et caractère de la race."}
+  breadcrumbs={[{ name: 'Nos Chiens', path: '/nos-chiens' }]}
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
       <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Bearded Collies'}</h1>
-      <p class="text-center text-muted max-w-2xl mx-auto mb-14">
+      <p class="text-center text-muted max-w-2xl mx-auto mb-3">
         {page?.intro || "Nos Bearded Collies sont au cœur de notre passion et de nos projets d'élevage, au sein de notre élevage familial en Alsace (Haut-Rhin)."}
+      </p>
+      <p class="text-center mb-14">
+        <a href="/guide-bearded-collie" class="text-sm text-gold-text font-semibold hover:text-gold-deep transition-colors">
+          En savoir plus sur la race (origines, caractère, entretien) ›
+        </a>
       </p>
 
       <div class="mb-16">
@@ -29,7 +35,7 @@ const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' }
         </div>
         <p class="text-center">
           <a href="/nos-males" class="inline-block border border-ink px-6 py-2.5 text-sm font-semibold hover:bg-ink hover:text-cream transition-colors">
-            Tous les découvrir
+            {page?.malesCtaLabel || 'Tous les découvrir'}
           </a>
         </p>
       </div>
@@ -43,7 +49,7 @@ const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' }
         </div>
         <p class="text-center">
           <a href="/nos-femelles" class="inline-block border border-ink px-6 py-2.5 text-sm font-semibold hover:bg-ink hover:text-cream transition-colors">
-            Toutes les découvrir
+            {page?.femellesCtaLabel || 'Toutes les découvrir'}
           </a>
         </p>
       </div>

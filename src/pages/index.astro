@@ -8,6 +8,7 @@ import {
   BLOG_POSTS_QUERY,
   DOGS_BY_SEX_QUERY,
   MARIAGES_WITH_CHIOTS_QUERY,
+  NOS_PORTEES_PAGE_QUERY,
 } from '../lib/sanity/queries';
 
 const home = await sanityClient.fetch(HOME_PAGE_QUERY);
@@ -15,11 +16,13 @@ const recentPosts = await sanityClient.fetch(BLOG_POSTS_QUERY);
 const males = await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Mâle' });
 const femelles = await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' });
 const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
+// Only the card CTA label is needed here — the rest of nosPorteesPage belongs to /nos-portees.
+const porteesPage = await sanityClient.fetch(NOS_PORTEES_PAGE_QUERY);
 ---
 
 <Layout
-  title={home?.seoTitle || 'Élevage de Bearded Collie en Alsace (Haut-Rhin)'}
-  description={home?.seoDescription || "Élevage familial De Saint Prixe, Bearded Collie en Alsace (Haut-Rhin, 68). Chiots LOF, pedigree soigné : découvrez nos chiens, nos portées et nos chiots disponibles."}
+  title={home?.seoTitle || 'Élevage Bearded Collie en Alsace — Chiots LOF disponibles'}
+  description={home?.seoDescription || "Élevage familial De Saint Prixe, Bearded Collie en Alsace (Haut-Rhin, 68). Chiots LOF disponibles, pedigree soigné : découvrez nos chiens, nos portées et notre guide de la race."}
   image={home?.heroImage ? urlFor(home.heroImage)?.width(1200).height(630).url() : undefined}
   footerBg="ink"
 >
@@ -64,6 +67,14 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
   </section>
 
   {home?.sections?.map((section: any, i: number) => (
-    <HomeSection section={section} index={i} mariages={mariages} recentPosts={recentPosts} males={males} femelles={femelles} />
+    <HomeSection
+      section={section}
+      index={i}
+      mariages={mariages}
+      recentPosts={recentPosts}
+      males={males}
+      femelles={femelles}
+      mariageCardCtaLabel={porteesPage?.cardCtaLabel}
+    />
   ))}
 </Layout>

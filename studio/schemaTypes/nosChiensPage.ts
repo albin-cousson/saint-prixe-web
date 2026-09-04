@@ -8,6 +8,18 @@ export default defineType({
     defineField({name: 'title', title: 'Titre', type: 'string'}),
     defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
     defineField({
+      name: 'malesCtaLabel',
+      title: 'Texte du bouton "Tous les découvrir" (section Nos Mâles)',
+      description: 'Optionnel — par défaut : "Tous les découvrir".',
+      type: 'string',
+    }),
+    defineField({
+      name: 'femellesCtaLabel',
+      title: 'Texte du bouton "Toutes les découvrir" (section Nos Femelles)',
+      description: 'Optionnel — par défaut : "Toutes les découvrir".',
+      type: 'string',
+    }),
+    defineField({
       name: 'seoTitle',
       title: 'Titre SEO (balise <title> / Google)',
       description:

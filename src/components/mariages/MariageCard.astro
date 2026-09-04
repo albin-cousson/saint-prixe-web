@@ -18,9 +18,10 @@ interface Props {
   description?: string;
   litterDate?: string;
   puppies: Puppy[];
+  ctaLabel?: string;
 }
 
-const { slug, dogGroomName, dogGroomPhoto, dogBrideName, dogBridePhoto, description, litterDate, puppies } =
+const { slug, dogGroomName, dogGroomPhoto, dogBrideName, dogBridePhoto, description, litterDate, puppies, ctaLabel } =
   Astro.props;
 
 const available = puppies.filter((p) => isAvailable(p.status)).length;
@@ -75,6 +76,6 @@ const unavailable = puppies.length - available;
   )}
 
   <span class="block w-full bg-gold group-hover:brightness-95 text-ink font-semibold text-sm py-3 px-5 transition">
-    Découvrir la portée ›
+    {ctaLabel || 'Découvrir la portée'} ›
   </span>
 </a>

@@ -7,7 +7,7 @@ import PuppyCarousel from '../../components/mariages/PuppyCarousel';
 import { sanityClient } from 'sanity:client';
 import { urlFor } from '../../lib/sanity/image';
 import { formatDateFr } from '../../lib/status';
-import { MARIAGE_SLUGS_QUERY, MARIAGE_BY_SLUG_QUERY } from '../../lib/sanity/queries';
+import { MARIAGE_SLUGS_QUERY, MARIAGE_BY_SLUG_QUERY, NOS_PORTEES_PAGE_QUERY } from '../../lib/sanity/queries';
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(MARIAGE_SLUGS_QUERY);
@@ -16,6 +16,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const mariage = await sanityClient.fetch(MARIAGE_BY_SLUG_QUERY, { slug });
+const porteesPage = await sanityClient.fetch(NOS_PORTEES_PAGE_QUERY);
 
 if (!mariage) return Astro.redirect('/nos-portees');
 
@@ -28,6 +29,10 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
   title={`${mariage.dogGroomName} × ${mariage.dogBrideName} — Chiots Bearded Collie`}
   description={mariage.description || `Chiots Bearded Collie LOF de ${pairName} — élevage De Saint Prixe, en Alsace (Haut-Rhin).`}
   image={mariage.dogGroomPhoto ? urlFor(mariage.dogGroomPhoto)?.width(1200).height(630).url() : undefined}
+  breadcrumbs={[
+    { name: 'Nos Portées', path: '/nos-portees' },
+    { name: pairName, path: `/nos-portees/${slug}` },
+  ]}
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-4xl mx-auto">
@@ -79,7 +84,7 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
             href={`/contact?sujet=${encodeURIComponent(`la portée de ${pairName}`)}`}
             class="inline-block bg-gold hover:brightness-95 text-ink font-semibold px-6 py-3 text-sm transition"
           >
-            Être prévenu·e de la naissance ›
+            {porteesPage?.notifyCtaLabel || 'Être prévenu·e de la naissance'} ›
           </a>
         </div>
       ) : (
@@ -103,6 +108,7 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
                 status={p.status}
                 description={p.description}
                 media={media}
+                reserveLabel={porteesPage?.reserveCtaLabel}
               />
             );
           })}

@@ -14,9 +14,10 @@ interface Props {
   status?: string;
   description?: string;
   media: MediaItem[]; // pre-resolved Sanity CDN URLs (photos) / file URLs (videos)
+  reserveLabel?: string;
 }
 
-export default function PuppyCarousel({ title, gender, color, birthDate, status, description, media }: Props) {
+export default function PuppyCarousel({ title, gender, color, birthDate, status, description, media, reserveLabel }: Props) {
   const [index, setIndex] = useState(0);
   const ok = isAvailable(status);
   const safeMedia = media.length ? media : [{ type: 'image' as const, url: '' }];
@@ -98,7 +99,7 @@ export default function PuppyCarousel({ title, gender, color, birthDate, status,
           href={`/contact?sujet=${encodeURIComponent(`ce chiot : ${title}`)}`}
           className="inline-block bg-gold hover:brightness-95 text-ink font-semibold text-xs px-4 py-2 mt-3 transition"
         >
-          Réserver ce chiot ›
+          {reserveLabel || 'Réserver ce chiot'} ›
         </a>
       )}
     </div>

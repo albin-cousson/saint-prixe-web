@@ -11,6 +11,7 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
 <Layout
   title={page?.seoTitle || 'Chiots Bearded Collie disponibles — Nos Portées'}
   description={page?.seoDescription || "Chiots Bearded Collie LOF disponibles à l'élevage De Saint Prixe, en Alsace (Haut-Rhin). Découvrez nos couples, nos portées en cours et nos prochaines naissances."}
+  breadcrumbs={[{ name: 'Nos Portées', path: '/nos-portees' }]}
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
@@ -42,6 +43,7 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
               description={m.description}
               litterDate={m.litterDate}
               puppies={m.puppies || []}
+              ctaLabel={page?.cardCtaLabel}
             />
           ))}
         </div>

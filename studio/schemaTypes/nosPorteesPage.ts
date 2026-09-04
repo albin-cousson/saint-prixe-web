@@ -8,6 +8,24 @@ export default defineType({
     defineField({name: 'title', title: 'Titre', type: 'string'}),
     defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
     defineField({
+      name: 'cardCtaLabel',
+      title: 'Texte du bouton "Découvrir la portée" (sur les cartes)',
+      description: 'Optionnel — affiché sur chaque carte portée (page Nos Portées et accueil). Par défaut : "Découvrir la portée".',
+      type: 'string',
+    }),
+    defineField({
+      name: 'reserveCtaLabel',
+      title: 'Texte du bouton "Réserver ce chiot"',
+      description: 'Optionnel — affiché sous chaque chiot disponible, sur la fiche d\'une portée. Par défaut : "Réserver ce chiot".',
+      type: 'string',
+    }),
+    defineField({
+      name: 'notifyCtaLabel',
+      title: 'Texte du bouton "Être prévenu·e de la naissance"',
+      description: 'Optionnel — affiché sur la fiche d\'une portée dont les chiots ne sont pas encore nés. Par défaut : "Être prévenu·e de la naissance".',
+      type: 'string',
+    }),
+    defineField({
       name: 'seoTitle',
       title: 'Titre SEO (balise <title> / Google)',
       description:
