@@ -15,6 +15,7 @@ const images = (page?.images || []).filter((img: any) => img._type === 'file' ||
   title={page?.seoTitle || 'Portfolio photo — Élevage de Bearded Collie De Saint Prixe'}
   description={page?.seoDescription || 'Portfolio photo de nos Bearded Collies : chiens, chiots et moments de vie à l\'élevage De Saint Prixe, en Alsace.'}
   footerBg="ink"
+  breadcrumbs={[{ name: 'Portfolio', path: '/portfolio' }]}
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
@@ -30,12 +31,12 @@ const images = (page?.images || []).filter((img: any) => img._type === 'file' ||
             <a
               href={urlFor(img)?.width(1600).url()}
               data-lightbox={urlFor(img)?.width(1600).url()}
-              data-lightbox-alt={`Portfolio De Saint Prixe — photo ${i + 1}`}
+              data-lightbox-alt={img.alt || `Portfolio De Saint Prixe — photo ${i + 1}`}
               class="block"
             >
               <img
                 src={urlFor(img)?.width(600).url()}
-                alt={`Portfolio De Saint Prixe — photo ${i + 1}`}
+                alt={img.alt || `Portfolio De Saint Prixe — photo ${i + 1}`}
                 loading="lazy"
                 class="w-full block"
               />

@@ -13,6 +13,15 @@ export const galleryOf = [
     options: {hotspot: true},
     components: {input: HeicImageInput},
     validation: requireImageAsset,
+    fields: [
+      {
+        name: 'alt',
+        title: 'Texte alternatif (accessibilité + référencement)',
+        type: 'string',
+        description:
+          'Optionnel — décrit la photo pour les lecteurs d\'écran et Google Images (ex. "Chiot Bearded Collie mâle, 8 semaines"). Laissé vide, un texte par défaut est utilisé.',
+      },
+    ],
   },
   {
     type: 'file' as const,

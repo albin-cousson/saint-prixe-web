@@ -33,6 +33,10 @@ const stats = [
   description={`${dog.name}, Bearded Collie de l'élevage De Saint Prixe, en Alsace (Haut-Rhin). Pedigree LOF, santé et caractère.`}
   image={dog.photo ? urlFor(dog.photo)?.width(1200).height(630).url() : undefined}
   footerBg="ink"
+  breadcrumbs={[
+    { name: 'Nos Chiens', path: '/nos-chiens' },
+    { name: dog.name, path: `/nos-chiens/${slug}` },
+  ]}
 >
   <article class="bg-cream min-h-screen px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-2xl mx-auto text-center">
@@ -127,10 +131,10 @@ const stats = [
                 <a
                   href={urlFor(item)?.width(1600).url()}
                   data-lightbox={urlFor(item)?.width(1600).url()}
-                  data-lightbox-alt={`Photo de ${dog.name}`}
+                  data-lightbox-alt={item.alt || `Photo de ${dog.name}`}
                   class="block bg-placeholder"
                 >
-                  <img src={urlFor(item)?.width(600).url()} alt={`Photo de ${dog.name}`} loading="lazy" class="w-full block" />
+                  <img src={urlFor(item)?.width(600).url()} alt={item.alt || `Photo de ${dog.name}`} loading="lazy" class="w-full block" />
                 </a>
               ),
             )}

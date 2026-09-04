@@ -11,6 +11,7 @@ const dogs = await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Mâle' });
 <Layout
   title={page?.seoTitle || 'Mâles Bearded Collie — Élevage en Alsace'}
   description={page?.seoDescription || "Découvrez nos mâles Bearded Collie, élevage De Saint Prixe en Alsace (Haut-Rhin) : pedigree LOF, santé et caractère de la race."}
+  breadcrumbs={[{ name: 'Nos Mâles', path: '/nos-males' }]}
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">

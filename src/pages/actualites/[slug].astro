@@ -43,6 +43,10 @@ const articleSchema = {
   image={coverUrl}
   type="article"
   footerBg="ink"
+  breadcrumbs={[
+    { name: 'Actualités', path: '/actualites' },
+    { name: post.title, path: `/actualites/${slug}` },
+  ]}
 >
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="bg-cream min-h-screen px-6 lg:px-10 py-16 md:py-20">
@@ -84,10 +88,10 @@ const articleSchema = {
                   <a
                     href={urlFor(item)?.width(1600).url()}
                     data-lightbox={urlFor(item)?.width(1600).url()}
-                    data-lightbox-alt={`Photo — ${post.title}`}
+                    data-lightbox-alt={item.alt || `Photo — ${post.title}`}
                     class="block bg-placeholder"
                   >
-                    <img src={urlFor(item)?.width(600).url()} alt={`Photo — ${post.title}`} loading="lazy" class="w-full block" />
+                    <img src={urlFor(item)?.width(600).url()} alt={item.alt || `Photo — ${post.title}`} loading="lazy" class="w-full block" />
                   </a>
                 ),
               )}

@@ -12,6 +12,9 @@ interface Props {
   footerBg?: 'cream' | 'ink';
   type?: 'website' | 'article';
   noindex?: boolean;
+  /** Trail below "Accueil", e.g. [{ name: 'Nos Chiens', path: '/nos-chiens' }, { name: dog.name, path: `/nos-chiens/${slug}` }].
+   * Purely structured data (BreadcrumbList JSON-LD) — renders no visible breadcrumb UI. Omit on the homepage. */
+  breadcrumbs?: { name: string; path: string }[];
 }
 const {
   title,
@@ -20,6 +23,7 @@ const {
   footerBg = 'ink',
   type = 'website',
   noindex = false,
+  breadcrumbs,
 } = Astro.props;
 
 const settings = await sanityClient.fetch(SITE_SETTINGS_QUERY);
@@ -54,6 +58,21 @@ const localBusinessSchema = {
     sameAs: settings.socialLinks.map((s: { url: string }) => s.url),
   }),
 };
+
+// Structured data only — no visible breadcrumb trail is rendered. Omitted on pages that
+// don't pass `breadcrumbs` (the homepage has no meaningful trail above "Accueil").
+const breadcrumbSchema = breadcrumbs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ name: 'Accueil', path: '/' }, ...breadcrumbs].map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: c.name,
+        item: new URL(c.path, Astro.site).toString(),
+      })),
+    }
+  : null;
 ---
 
 <!doctype html>
@@ -106,6 +125,7 @@ const localBusinessSchema = {
     {image && <meta name="twitter:image" content={image} />}
 
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    {breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
 
     {settings?.gaMeasurementId && (
       <>
