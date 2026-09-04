@@ -1,10 +1,16 @@
 import { connectLambda, getStore } from '@netlify/blobs';
 
 // Scheduled function (see the [functions."deploy-debounce-check"] schedule in
-// netlify.toml) that fires the real Netlify build hook at most once, ~45s
-// after Sanity publishes go quiet. Pairs with sanity-deploy-trigger.mjs,
+// netlify.toml) that fires the real Netlify build hook at most once, once
+// Sanity publishes go quiet for a while. Pairs with sanity-deploy-trigger.mjs,
 // which just records that a publish happened instead of building right away.
-const QUIET_PERIOD_MS = 45_000;
+//
+// This only runs once a minute, so a short quiet period buys nothing — it
+// previously sat at 45s, which is shorter than "Publier tout" can take to
+// push several documents through. That let this check catch a lull *between*
+// documents, fire a build early, then fire a second one for the rest. Set
+// generously above any realistic multi-document publish burst instead.
+const QUIET_PERIOD_MS = 3 * 60_000;
 
 export async function handler(event) {
   connectLambda(event);
