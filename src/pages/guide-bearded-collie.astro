@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Flourish from '../components/Flourish.astro';
+import { PortableText } from 'astro-portabletext';
+import { urlFor } from '../lib/sanity/image';
+import { sanityClient } from 'sanity:client';
+import { GUIDE_PAGE_QUERY } from '../lib/sanity/queries';
+
+const page = await sanityClient.fetch(GUIDE_PAGE_QUERY);
+
+// Sanity-driven sections take over entirely once at least one exists — same
+// all-or-nothing convention as the FAQ page's `questions` field.
+const sanitySections = (page?.sections || []) as any[];
+
+const FALLBACK_SECTIONS = [
+  {
+    heading: 'Origines',
+    body: [
+      "Le Bearded Collie est originaire d'Écosse et du nord de l'Angleterre, où il travaillait comme chien de berger dans les Highlands. Des écrits écossais du 16ᵉ siècle décrivent déjà des chiens de troupeau à l'allure très proche de la race actuelle.",
+      "Il est reconnu par la Fédération Cynologique Internationale (FCI) sous le numéro 271, dans le groupe 1 (chiens de berger et de bouvier), section 1.",
+    ],
+  },
+  {
+    heading: 'Caractère',
+    body: [
+      'Le standard décrit un chien éveillé, vif, sûr de lui et actif — sans aucun signe de nervosité ni d’agressivité. C’est un compagnon intelligent, observateur et attaché à sa famille, qui s’adapte bien à la vie avec des enfants dès lors qu’il est bien socialisé, comme le sont nos chiots dès leur naissance.',
+      "C'est aussi un chien qui a besoin de dépense physique et de stimulation mentale au quotidien : promenades régulières, jeux, et idéalement une activité comme l'agility ou l'obéissance, pour lesquelles la race excelle grâce à son intelligence.",
+    ],
+  },
+  {
+    heading: 'Le poil et son entretien',
+    body: [
+      "Sa robe caractéristique est longue et dense, composée d'un sous-poil doux et fourni et d'un poil de couverture plus dur et plat, qui le protège des intempéries typiques de son Écosse natale.",
+      "Un entretien régulier est indispensable : brossage au moins deux fois par semaine avec une brosse à poils longs et un peigne fin, quotidien pendant les deux périodes de mue annuelles, et un bain toutes les 2 à 3 mois (ou en cas de besoin) avec un shampoing doux.",
+    ],
+  },
+  {
+    heading: 'Santé',
+    body: [
+      "Comme la plupart des races de taille moyenne à grande, le Bearded Collie peut être concerné par la dysplasie de la hanche, l'hypothyroïdie, certaines affections oculaires (cataracte, atrophie rétinienne progressive) ou plus rarement la maladie d'Addison. Un élevage sérieux fait dépister ces points chez ses reproducteurs avant chaque saillie.",
+      "Bien suivi, un Bearded Collie a une espérance de vie de 12 à 14 ans, pour un poids adulte généralement compris entre 20 et 30 kg.",
+    ],
+  },
+];
+---
+
+<Layout
+  title={page?.seoTitle || 'Guide du Bearded Collie — Race, Caractère, Entretien'}
+  description={
+    page?.seoDescription ||
+    'Tout savoir sur le Bearded Collie : origines, standard FCI, caractère, entretien du poil et santé de la race — par l\'élevage De Saint Prixe, en Alsace.'
+  }
+  breadcrumbs={[{ name: 'Guide du Bearded Collie', path: '/guide-bearded-collie' }]}
+>
+  <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">
+        {page?.title || 'Guide du Bearded Collie'}
+      </h1>
+      <Flourish class="mx-auto mb-6" />
+      <p class="text-center text-muted max-w-2xl mx-auto mb-16">
+        {
+          page?.intro ||
+            "Avant d'accueillir un Bearded Collie, mieux vaut connaître la race : d'où elle vient, quel caractère l'anime, et ce que son entretien demande au quotidien."
+        }
+      </p>
+
+      <div class="space-y-14">
+        {sanitySections.length > 0
+          ? sanitySections.map((s: any) => (
+              <div>
+                <h2 class="font-display font-bold text-2xl mb-4">{s.heading}</h2>
+                {s.image && (
+                  <div class="mb-5 aspect-[16/9] overflow-hidden bg-placeholder">
+                    <img
+                      src={urlFor(s.image)?.width(900).height(506).url()}
+                      alt={s.heading || ''}
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div class="prose-body text-[15px] leading-relaxed text-muted">
+                  <PortableText value={s.body} />
+                </div>
+                {s.ctaHref && (
+                  <p class="mt-3">
+                    <a href={s.ctaHref} class="text-sm font-semibold text-gold-text hover:text-gold-deep transition-colors">
+                      {s.ctaLabel || 'En savoir plus'} ›
+                    </a>
+                  </p>
+                )}
+              </div>
+            ))
+          : FALLBACK_SECTIONS.map((s) => (
+              <div>
+                <h2 class="font-display font-bold text-2xl mb-4">{s.heading}</h2>
+                <div class="space-y-3 text-[15px] leading-relaxed text-muted">
+                  {s.body.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+      </div>
+
+      <div class="mt-16 bg-white border border-border p-8 md:p-10 text-center">
+        <h2 class="font-display font-bold text-xl mb-3">Prêt·e à accueillir un Bearded Collie ?</h2>
+        <p class="text-sm text-muted max-w-md mx-auto mb-6">
+          Découvrez nos couples et les chiots disponibles à l'élevage De Saint Prixe, en Alsace — ou consultez notre
+          FAQ pour toutes vos questions sur la réservation.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a
+            href="/nos-portees"
+            class="inline-block bg-gold hover:brightness-95 text-ink font-semibold px-6 py-3 text-sm transition"
+          >
+            Voir nos portées ›
+          </a>
+          <a
+            href="/faq"
+            class="inline-block border border-ink px-6 py-3 text-sm font-semibold hover:bg-ink hover:text-cream transition-colors"
+          >
+            Consulter la FAQ ›
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Flourish from '../components/Flourish.astro';
+import { sanityClient } from 'sanity:client';
+import { FAQ_PAGE_QUERY } from '../lib/sanity/queries';
+
+const page = await sanityClient.fetch(FAQ_PAGE_QUERY);
+
+const FALLBACK_FAQS = [
+  {
+    question: 'Comment réserver un chiot ?',
+    answer:
+      "Contactez-nous via le formulaire de la page Contact, par téléphone ou par e-mail, en précisant la portée qui vous intéresse (voir la page Nos Portées). Nous échangeons avec vous pour vous accompagner dans le choix du chiot le plus adapté à votre famille.",
+  },
+  {
+    question: 'Les chiots sont-ils inscrits au LOF ?',
+    answer:
+      "Oui, tous nos chiots Bearded Collie sont inscrits au LOF (Livre des Origines Français), identifiés par puce électronique et vaccinés avant leur départ.",
+  },
+  {
+    question: "Quel est le prix d'un chiot Bearded Collie ?",
+    answer:
+      "Le tarif dépend de la portée et vous est communiqué directement lors de votre prise de contact. N'hésitez pas à nous écrire pour connaître le tarif de la portée en cours ou à venir.",
+  },
+  {
+    question: 'Que reçoit-on à la remise du chiot ?',
+    answer:
+      "Le chiot vous est remis identifié, vacciné, accompagné de son carnet de santé et de son certificat de naissance LOF.",
+  },
+  {
+    question: 'Le Bearded Collie est-il adapté aux familles avec enfants ?',
+    answer:
+      "C'est une race réputée pour son bon caractère : vive, éveillée et sans agressivité selon son standard officiel. Bien socialisés dès la naissance comme le sont nos chiots, les Bearded Collies s'entendent généralement très bien avec les enfants.",
+  },
+  {
+    question: 'Où se trouve l\'élevage et quelles sont vos prochaines portées ?',
+    answer:
+      "L'élevage est situé à Raedersheim, dans le Haut-Rhin (68), en Alsace. Retrouvez nos couples, nos portées en cours et nos prochaines naissances sur la page Nos Portées.",
+  },
+];
+
+const faqs = page?.questions?.length > 0 ? page.questions : FALLBACK_FAQS;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f: { question: string; answer: string }) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};
+---
+
+<Layout
+  title={page?.seoTitle || 'FAQ — Réserver un chiot Bearded Collie'}
+  description={
+    page?.seoDescription ||
+    "Toutes les réponses à vos questions sur nos chiots Bearded Collie : réservation, LOF, prix, remise du chiot — élevage De Saint Prixe, en Alsace."
+  }
+  breadcrumbs={[{ name: 'FAQ', path: '/faq' }]}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
+    <div class="max-w-2xl mx-auto">
+      <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">
+        {page?.title || 'Questions fréquentes'}
+      </h1>
+      <Flourish class="mx-auto mb-6" />
+      <p class="text-center text-muted max-w-xl mx-auto mb-14">
+        {
+          page?.intro ||
+            "Les réponses aux questions qu'on nous pose le plus souvent avant l'arrivée d'un chiot Bearded Collie."
+        }
+      </p>
+
+      <div class="space-y-6">
+        {faqs.map((f: { question: string; answer: string }) => (
+          <div class="bg-white border border-border p-6 md:p-7">
+            <h2 class="font-display font-bold text-lg mb-2">{f.question}</h2>
+            <p class="text-[15px] leading-relaxed text-muted">{f.answer}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-center text-sm text-muted mt-12">
+        Une autre question ?
+        <a href="/contact" class="text-gold-text font-semibold hover:text-gold-deep transition-colors">Contactez-nous</a>.
+      </p>
+    </div>
+  </section>
+</Layout>

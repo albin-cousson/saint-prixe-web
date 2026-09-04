@@ -34,6 +34,8 @@ export const NOS_CHIENS_PAGE_QUERY = defineQuery(`*[_type == "nosChiensPage"][0]
 export const NOS_MALES_PAGE_QUERY = defineQuery(`*[_type == "nosMalesPage"][0]`);
 export const NOS_FEMELLES_PAGE_QUERY = defineQuery(`*[_type == "nosFemellesPage"][0]`);
 export const NOS_PORTEES_PAGE_QUERY = defineQuery(`*[_type == "nosPorteesPage"][0]`);
+export const GUIDE_PAGE_QUERY = defineQuery(`*[_type == "guidePage"][0]`);
+export const FAQ_PAGE_QUERY = defineQuery(`*[_type == "faqPage"][0]`);
 
 export const DOGS_BY_SEX_QUERY = defineQuery(
   `*[_type == "dog" && sex == $sex] | order(birthDate desc)`,

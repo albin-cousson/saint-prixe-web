@@ -20,6 +20,7 @@ const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
   title={page?.seoTitle || 'Contact — Élevage de Bearded Collie en Alsace'}
   description={page?.seoDescription || "Contactez l'élevage De Saint Prixe, Bearded Collie à Raedersheim (68, Haut-Rhin, Alsace). Par téléphone, e-mail ou via notre formulaire."}
   footerBg="ink"
+  breadcrumbs={[{ name: 'Contact', path: '/contact' }]}
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-5xl mx-auto">
@@ -28,6 +29,11 @@ const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
         <Flourish width={90} height={12} class="mx-auto mb-4" />
         <p class="text-sm text-muted max-w-md mx-auto">
           {page?.intro || 'Une question sur nos chiens ou une prochaine portée ? Nous répondons avec plaisir, par e-mail ou par téléphone.'}
+        </p>
+        <p class="text-sm mt-2">
+          <a href="/faq" class="text-gold-text font-semibold hover:text-gold-deep transition-colors">
+            Voir la FAQ ›
+          </a>
         </p>
       </div>
 

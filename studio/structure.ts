@@ -49,5 +49,7 @@ export const structure: StructureResolver = (S) =>
             ]),
         ),
       singleton(S, 'portfolioPage', 'Portfolio'),
+      singleton(S, 'guidePage', 'Guide du Bearded Collie'),
+      singleton(S, 'faqPage', 'FAQ'),
       singleton(S, 'contactPage', 'Contact'),
     ])
