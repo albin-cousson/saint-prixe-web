@@ -67,6 +67,7 @@ const outlineBtnClass = isAlt
       >
         {shownMariages.map((m: any) => (
           <MariageCard
+            id={m._id}
             slug={m.slug?.current}
             dogGroomName={m.dogGroomName}
             dogGroomPhoto={m.dogGroomPhoto}
@@ -75,6 +76,8 @@ const outlineBtnClass = isAlt
             description={richTextToPlainText(m.description)}
             litterDate={m.litterDate}
             puppies={m.puppies || []}
+            gallery={m.gallery || []}
+            litterSold={m.litterSold}
             ctaLabel={mariageCardCtaLabel}
           />
         ))}
