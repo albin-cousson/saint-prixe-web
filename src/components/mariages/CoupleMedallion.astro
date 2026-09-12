@@ -12,11 +12,9 @@ const { groomPhoto, bridePhoto, groomName, brideName, size = 'card' } = Astro.pr
 
 const isHero = size === 'hero';
 // flex-1 + min-w-0 lets each photo shrink to fit whatever space is actually available
-// (never wider than its card, on any screen), while max-w-* caps how big it gets on
-// larger screens so it still matches the original design at each breakpoint.
-const photoClass = isHero
-  ? 'max-w-32 sm:max-w-40 md:max-w-48'
-  : 'max-w-28 sm:max-w-32 md:max-w-36';
+// (never wider than its card, on any screen). The hero variant caps how big it gets on
+// larger screens; the card variant has no cap so the photos fill the card edge to edge.
+const photoClass = isHero ? 'max-w-32 sm:max-w-40 md:max-w-48' : '';
 const ampersandClass = isHero ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl';
 const imgWidth = isHero ? 600 : 400;
 const imgHeight = isHero ? 450 : 300;

@@ -46,23 +46,26 @@ const unavailable = puppies.length - available;
     </p>
   ) : (
     <>
-      <div class="flex flex-wrap gap-2 justify-center my-4">
+      <div class="flex flex-wrap justify-center gap-2 my-4">
         {puppies.map((p) => {
           const ok = isAvailable(p.status);
           return (
-            <div class:list={['relative w-[72px] h-[72px] overflow-hidden bg-placeholder', !ok && 'opacity-90']}>
+            <div class="relative aspect-square overflow-hidden bg-placeholder flex-[0_0_calc(25%-6px)]">
               {p.photo && (
                 <img
                   src={urlFor(p.photo)?.width(150).height(150).url()}
                   alt={p.title}
                   loading="lazy"
-                  class:list={['w-full h-full object-cover', !ok && 'grayscale opacity-55']}
+                  class:list={['w-full h-full object-cover', !ok && 'grayscale opacity-60']}
                 />
               )}
               {!ok && (
-                <span class="absolute inset-x-0 bottom-0 bg-black/70 text-white text-[10px] font-bold uppercase tracking-wide text-center py-1 px-0.5">
-                  {p.status || 'Plus dispo'}
-                </span>
+                <>
+                  <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+                  <span class="absolute inset-x-0 bottom-0 pb-1 text-white text-[9px] font-bold uppercase tracking-wide text-center leading-none">
+                    {p.status || 'Plus dispo'}
+                  </span>
+                </>
               )}
             </div>
           );
@@ -76,6 +79,6 @@ const unavailable = puppies.length - available;
   )}
 
   <span class="block w-full bg-gold group-hover:brightness-95 text-ink font-semibold text-sm py-3 px-5 transition">
-    {ctaLabel || 'Découvrir la portée'} ›
+    {ctaLabel || 'Voir la portée'} ›
   </span>
 </a>
