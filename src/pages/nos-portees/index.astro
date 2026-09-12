@@ -41,6 +41,7 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
         >
           {mariages.map((m: any) => (
             <MariageCard
+              id={m._id}
               slug={m.slug?.current}
               dogGroomName={m.dogGroomName}
               dogGroomPhoto={m.dogGroomPhoto}
@@ -49,6 +50,8 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
               description={richTextToPlainText(m.description)}
               litterDate={m.litterDate}
               puppies={m.puppies || []}
+              gallery={m.gallery || []}
+              litterSold={m.litterSold}
               ctaLabel={page?.cardCtaLabel}
             />
           ))}

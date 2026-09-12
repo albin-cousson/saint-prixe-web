@@ -3,13 +3,16 @@ import Flourish from '../Flourish.astro';
 import CoupleMedallion from './CoupleMedallion.astro';
 import { urlFor } from '../../lib/sanity/image';
 import { isAvailable, formatDateFr } from '../../lib/status';
+import { collectLitterMedia, seededShuffle } from '../../lib/litter';
 
 interface Puppy {
   title: string;
   photo?: any;
+  gallery?: any[];
   status?: string;
 }
 interface Props {
+  id: string;
   slug: string;
   dogGroomName: string;
   dogGroomPhoto?: any;
@@ -18,14 +21,42 @@ interface Props {
   description?: string;
   litterDate?: string;
   puppies: Puppy[];
+  gallery?: any[];
+  litterSold?: boolean;
   ctaLabel?: string;
 }
 
-const { slug, dogGroomName, dogGroomPhoto, dogBrideName, dogBridePhoto, description, litterDate, puppies, ctaLabel } =
-  Astro.props;
+const {
+  id,
+  slug,
+  dogGroomName,
+  dogGroomPhoto,
+  dogBrideName,
+  dogBridePhoto,
+  description,
+  litterDate,
+  puppies,
+  gallery,
+  litterSold,
+  ctaLabel,
+} = Astro.props;
 
 const available = puppies.filter((p) => isAvailable(p.status)).length;
 const unavailable = puppies.length - available;
+
+// Sold litter: the per-puppy thumbnails give way to a teaser of the album shown on the detail
+// page — same seeded order as there, so the card's preview matches the album's opening photos.
+// Photos only (the listing query doesn't resolve video URLs, and a poster-less video tile
+// would just read as a black square here).
+const albumPhotos = litterSold
+  ? seededShuffle(collectLitterMedia({ gallery, puppies }, `${dogGroomName} & ${dogBrideName}`), id).filter(
+      (m) => m._type === 'image',
+    )
+  : [];
+const showAlbum = albumPhotos.length > 0;
+const [lead, ...rest] = albumPhotos;
+const sideTiles = [rest[0], rest[1]];
+const morePhotos = albumPhotos.length - 3;
 ---
 
 <a href={`/nos-portees/${slug}`} class="group block bg-white border border-border p-9 pb-7 text-center text-ink transition-shadow hover:shadow-[0_12px_24px_rgba(59,59,59,0.1)]">
@@ -40,7 +71,46 @@ const unavailable = puppies.length - available;
 
   {description && <p class="text-sm text-muted leading-relaxed mb-1 line-clamp-2">{description}</p>}
 
-  {puppies.length === 0 ? (
+  {showAlbum ? (
+    <>
+      <div class="grid grid-cols-3 grid-rows-2 gap-2 my-4 aspect-[3/2]">
+        <div class="relative col-span-2 row-span-2 overflow-hidden bg-placeholder">
+          <img
+            src={urlFor(lead)?.width(520).height(520).url()}
+            alt={lead.alt}
+            loading="lazy"
+            class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
+          />
+          <span class="absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 bg-ink/85 text-cream text-[9px] font-semibold uppercase tracking-[0.18em] px-2 py-1">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" class="text-gold" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Portée complète
+          </span>
+        </div>
+        {sideTiles.map((tile, i) => (
+          <div class="relative overflow-hidden bg-placeholder">
+            {tile && (
+              <img
+                src={urlFor(tile)?.width(260).height(260).url()}
+                alt={tile.alt}
+                loading="lazy"
+                class="w-full h-full object-cover"
+              />
+            )}
+            {i === 1 && morePhotos > 0 && (
+              <span class="absolute inset-0 flex items-center justify-center bg-ink/60 text-cream font-display text-lg">
+                +{morePhotos}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+      <p class="text-xs text-muted-2 mb-4">
+        {puppies.length} chiot{puppies.length > 1 ? 's' : ''} · {puppies.length > 1 ? 'tous ont' : 'il a'} rejoint {puppies.length > 1 ? 'leur' : 'sa'} famille
+      </p>
+    </>
+  ) : puppies.length === 0 ? (
     <p class="text-xs italic text-muted-2 my-4">
       {litterDate ? `Naissance prévue le ${formatDateFr(litterDate)}` : 'Naissance à venir'}
     </p>
@@ -79,6 +149,6 @@ const unavailable = puppies.length - available;
   )}
 
   <span class="block w-full bg-gold group-hover:brightness-95 text-ink font-semibold text-sm py-3 px-5 transition">
-    {ctaLabel || 'Voir la portée'} ›
+    {ctaLabel || (showAlbum ? "Voir l'album de la portée" : 'Voir la portée')} ›
   </span>
 </a>

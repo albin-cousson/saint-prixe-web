@@ -1,0 +1,38 @@
+---
+import { urlFor } from '../lib/sanity/image';
+
+/** The Portfolio masonry (photos + videos, lightbox on photos). Shared with the "sold litter"
+ * album on /nos-portees so both stay visually identical. Items are Sanity gallery entries
+ * (image objects usable by urlFor(), or file items already resolved to a `url` — see
+ * GALLERY_PROJECTION in queries.ts). */
+interface Props {
+  items: any[];
+  altPrefix: string;
+}
+const { items, altPrefix } = Astro.props;
+---
+
+<div class="columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
+  {items.map((item: any, i: number) => {
+    const alt = item.alt || `${altPrefix} — photo ${i + 1}`;
+    return item._type === 'file' ? (
+      item.url && (
+        <video
+          src={item.url}
+          controls
+          preload="metadata"
+          class="w-full block bg-ink break-inside-avoid [transform:translateZ(0)]"
+        />
+      )
+    ) : (
+      <a
+        href={urlFor(item)?.width(1600).url()}
+        data-lightbox={urlFor(item)?.width(1600).url()}
+        data-lightbox-alt={alt}
+        class="block break-inside-avoid"
+      >
+        <img src={urlFor(item)?.width(600).url()} alt={alt} loading="lazy" class="w-full block" />
+      </a>
+    );
+  })}
+</div>

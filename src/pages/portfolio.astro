@@ -1,8 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Lightbox from '../components/Lightbox.astro';
+import MasonryGallery from '../components/MasonryGallery.astro';
 import RichText from '../components/RichText.astro';
-import { urlFor } from '../lib/sanity/image';
 import { sanityClient } from 'sanity:client';
 import { PORTFOLIO_PAGE_QUERY } from '../lib/sanity/queries';
 import { hasRichText } from '../lib/sanity/richText';
@@ -30,34 +30,7 @@ const images = (page?.images || []).filter((img: any) => img._type === 'file' ||
           <RichText value={page.intro} />
         </div>
       )}
-      <div class="columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4">
-        {images.map((img: any, i: number) =>
-          img._type === 'file' ? (
-            img.url && (
-              <video
-                src={img.url}
-                controls
-                preload="metadata"
-                class="w-full block bg-ink break-inside-avoid [transform:translateZ(0)]"
-              />
-            )
-          ) : (
-            <a
-              href={urlFor(img)?.width(1600).url()}
-              data-lightbox={urlFor(img)?.width(1600).url()}
-              data-lightbox-alt={img.alt || `Portfolio De Saint Prixe — photo ${i + 1}`}
-              class="block"
-            >
-              <img
-                src={urlFor(img)?.width(600).url()}
-                alt={img.alt || `Portfolio De Saint Prixe — photo ${i + 1}`}
-                loading="lazy"
-                class="w-full block"
-              />
-            </a>
-          ),
-        )}
-      </div>
+      <MasonryGallery items={images} altPrefix="Portfolio De Saint Prixe" />
     </div>
   </section>
   <Lightbox />
