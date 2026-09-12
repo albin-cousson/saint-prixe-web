@@ -1,5 +1,5 @@
-import {type DragEvent, useCallback, useRef, useState} from 'react'
-import {Box, Button, Card, Spinner, Stack, Text, useToast} from '@sanity/ui'
+import {type DragEvent, useCallback, useEffect, useRef, useState} from 'react'
+import {Box, Button, Card, Dialog, Flex, Grid, Spinner, Stack, Text, useToast} from '@sanity/ui'
 import {set, useClient, type ImageInputProps} from 'sanity'
 
 const HEIC_MIME_TYPES = ['image/heic', 'image/heif']
@@ -17,6 +17,73 @@ async function convertHeicToJpeg(file: File): Promise<File> {
   return new File([blob], file.name.replace(HEIC_EXTENSION, '.jpg'), {type: 'image/jpeg'})
 }
 
+type LibraryAsset = {_id: string; url: string; originalFilename?: string}
+
+/** Modal listing every image asset already uploaded to this Sanity dataset, so a field can
+ * reuse a photo instead of uploading the same file again. Plain GROQ fetch + `onChange`/`set`
+ * (the same primitives the upload flow below already uses) rather than Sanity's internal
+ * asset-browser UI, which isn't part of the public plugin API. */
+function AssetLibraryDialog({onSelect, onClose}: {onSelect: (assetId: string) => void; onClose: () => void}) {
+  const client = useClient({apiVersion: API_VERSION})
+  const [assets, setAssets] = useState<LibraryAsset[] | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    client
+      .fetch<LibraryAsset[]>(
+        `*[_type == "sanity.imageAsset"] | order(_createdAt desc)[0...200]{_id, url, originalFilename}`,
+      )
+      .then((result) => {
+        if (!cancelled) setAssets(result)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [client])
+
+  return (
+    <Dialog id="asset-library" header="Choisir une photo déjà importée" width={2} onClose={onClose} onClickOutside={onClose}>
+      <Box padding={4}>
+        {assets === null ? (
+          <Flex justify="center" padding={4}>
+            <Spinner />
+          </Flex>
+        ) : assets.length === 0 ? (
+          <Text size={1} muted>
+            Aucune photo dans la bibliothèque pour l'instant — importez-en une pour la retrouver ici la prochaine fois.
+          </Text>
+        ) : (
+          <Grid columns={[2, 3, 4]} gap={2}>
+            {assets.map((asset) => (
+              <button
+                key={asset._id}
+                type="button"
+                onClick={() => onSelect(asset._id)}
+                title={asset.originalFilename}
+                style={{
+                  aspectRatio: '1',
+                  padding: 0,
+                  border: '1px solid var(--card-border-color)',
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  background: 'none',
+                }}
+              >
+                <img
+                  src={`${asset.url}?w=200&h=200&fit=crop`}
+                  alt={asset.originalFilename || ''}
+                  style={{width: '100%', height: '100%', objectFit: 'cover', display: 'block'}}
+                />
+              </button>
+            ))}
+          </Grid>
+        )}
+      </Box>
+    </Dialog>
+  )
+}
+
 /** Only the empty-field upload flow goes through this custom dropzone — once a value exists,
  * rendering falls back to Sanity's own image input (crop/hotspot/replace/remove all still
  * work natively). That first upload is exactly the case that matters: no browser can preview
@@ -31,6 +98,7 @@ function HeicImageInputImpl(props: ImageInputProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
 
   const upload = useCallback(
     async (file: File | undefined) => {
@@ -64,6 +132,14 @@ function HeicImageInputImpl(props: ImageInputProps) {
     [upload],
   )
 
+  const selectFromLibrary = useCallback(
+    (assetId: string) => {
+      onChange(set({_type: schemaType.name, asset: {_type: 'reference', _ref: assetId}}))
+      setPickerOpen(false)
+    },
+    [onChange, schemaType.name],
+  )
+
   if (value?.asset) {
     return props.renderDefault(props)
   }
@@ -92,12 +168,18 @@ function HeicImageInputImpl(props: ImageInputProps) {
             </Text>
           )}
         </Box>
-        <Box style={{textAlign: 'center'}}>
+        <Flex justify="center" gap={2} wrap="wrap">
           <Button
             mode="ghost"
             text="Choisir un fichier"
             disabled={busy}
             onClick={() => inputRef.current?.click()}
+          />
+          <Button
+            mode="ghost"
+            text="Choisir dans la bibliothèque"
+            disabled={busy}
+            onClick={() => setPickerOpen(true)}
           />
           <input
             ref={inputRef}
@@ -106,8 +188,9 @@ function HeicImageInputImpl(props: ImageInputProps) {
             hidden
             onChange={(event) => upload(event.target.files?.[0])}
           />
-        </Box>
+        </Flex>
       </Stack>
+      {pickerOpen && <AssetLibraryDialog onSelect={selectFromLibrary} onClose={() => setPickerOpen(false)} />}
     </Card>
   )
 }
