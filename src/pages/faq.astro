@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Flourish from '../components/Flourish.astro';
+import RichText from '../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { FAQ_PAGE_QUERY } from '../lib/sanity/queries';
+import { hasRichText, richTextToPlainText } from '../lib/sanity/richText';
 
 const page = await sanityClient.fetch(FAQ_PAGE_QUERY);
 
@@ -41,13 +43,15 @@ const FALLBACK_FAQS = [
 
 const faqs = page?.questions?.length > 0 ? page.questions : FALLBACK_FAQS;
 
+// `answer` is a plain string for the hardcoded fallback and rich text once it comes from
+// Sanity — the JSON-LD schema always needs plain text either way.
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map((f: { question: string; answer: string }) => ({
+  mainEntity: faqs.map((f: { question: string; answer: string | any[] }) => ({
     '@type': 'Question',
     name: f.question,
-    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    acceptedAnswer: { '@type': 'Answer', text: richTextToPlainText(f.answer) },
   })),
 };
 ---
@@ -67,26 +71,69 @@ const faqSchema = {
         {page?.title || 'Questions fréquentes'}
       </h1>
       <Flourish class="mx-auto mb-6" />
-      <p class="text-center text-muted max-w-xl mx-auto mb-14">
-        {
-          page?.intro ||
-            "Les réponses aux questions qu'on nous pose le plus souvent avant l'arrivée d'un chiot Bearded Collie."
-        }
-      </p>
+      <div class="text-center text-muted max-w-xl mx-auto mb-14">
+        {hasRichText(page?.intro) ? (
+          <RichText value={page.intro} />
+        ) : (
+          <p>Les réponses aux questions qu'on nous pose le plus souvent avant l'arrivée d'un chiot Bearded Collie.</p>
+        )}
+      </div>
 
-      <div class="space-y-6">
-        {faqs.map((f: { question: string; answer: string }) => (
-          <div class="bg-white border border-border p-6 md:p-7">
-            <h2 class="font-display font-bold text-lg mb-2">{f.question}</h2>
-            <p class="text-[15px] leading-relaxed text-muted">{f.answer}</p>
-          </div>
+      <div class="bg-white border border-border divide-y divide-border">
+        {faqs.map((f: { question: string; answer: string | any[] }, i: number) => (
+          <details class="faq-item group" name="faq" open={i === 0}>
+            <summary class="flex items-baseline gap-4 md:gap-5 px-5 md:px-7 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none transition-colors hover:bg-cream/60 focus-visible:outline-none focus-visible:bg-cream/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold">
+              <span class="font-display font-bold text-sm text-gold-text tabular-nums shrink-0 w-6" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h2 class="flex-1 font-display font-bold text-lg md:text-xl leading-snug">{f.question}</h2>
+              <span
+                class="faq-icon shrink-0 self-center w-7 h-7 flex items-center justify-center border border-gold text-gold-text text-lg leading-none transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <div class="px-5 md:px-7 pb-6 pl-[3.75rem] md:pl-[4.25rem] prose-body text-[15px] leading-relaxed text-muted">
+              <RichText value={f.answer} />
+            </div>
+          </details>
         ))}
       </div>
 
-      <p class="text-center text-sm text-muted mt-12">
-        Une autre question ?
-        <a href="/contact" class="text-gold-text font-semibold hover:text-gold-deep transition-colors">Contactez-nous</a>.
-      </p>
+      <div class="mt-12 bg-ink text-cream px-6 py-10 md:py-12 text-center">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.25em] text-gold mb-3">Une autre question ?</p>
+        <p class="font-display font-bold text-xl md:text-2xl mb-6">Nous vous répondons avec plaisir.</p>
+        <a
+          href="/contact"
+          class="inline-block bg-gold hover:brightness-95 text-ink font-semibold text-sm px-7 py-3.5 transition"
+        >
+          Contactez-nous ›
+        </a>
+      </div>
     </div>
   </section>
 </Layout>
+
+<style>
+  /* Animate the native <details> panel (Chrome 131+ / Safari 26+); other browsers simply
+   * open instantly, which is the accessible default. */
+  .faq-item {
+    interpolate-size: allow-keywords;
+  }
+  .faq-item::details-content {
+    height: 0;
+    overflow: hidden;
+    transition:
+      height 0.3s ease,
+      content-visibility 0.3s allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    height: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item::details-content {
+      transition: none;
+    }
+  }
+</style>
