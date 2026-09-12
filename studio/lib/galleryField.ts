@@ -1,4 +1,5 @@
 import {HeicImageInput} from '../components/HeicImageInput'
+import {VideoFileInput} from '../components/VideoFileInput'
 import {requireFileAsset} from './requireFileAsset'
 import {requireImageAsset} from './requireImageAsset'
 
@@ -27,6 +28,7 @@ export const galleryOf = [
     type: 'file' as const,
     title: 'Vidéo',
     options: {accept: 'video/*'},
+    components: {input: VideoFileInput},
     validation: requireFileAsset({label: 'vidéo', mimePrefix: 'video/'}),
   },
 ]

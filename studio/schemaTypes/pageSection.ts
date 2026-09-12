@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {HeicImageInput} from '../components/HeicImageInput'
 import {richTextStylesWithCenter} from '../lib/richText'
 
 /** Reusable flexible content block used by the simpler pages (About, Contact, Portfolio, Inquiry). */
@@ -14,7 +15,13 @@ export default defineType({
       type: 'array',
       of: [{type: 'block', styles: richTextStylesWithCenter}],
     }),
-    defineField({name: 'image', title: 'Image', type: 'image', options: {hotspot: true}}),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: {hotspot: true},
+      components: {input: HeicImageInput},
+    }),
     defineField({name: 'ctaLabel', title: 'Texte du bouton "en savoir plus"', type: 'string'}),
     defineField({name: 'ctaHref', title: 'Lien du bouton "en savoir plus"', type: 'string'}),
   ],
