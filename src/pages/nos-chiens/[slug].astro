@@ -2,10 +2,12 @@
 import Layout from '../../layouts/Layout.astro';
 import Flourish from '../../components/Flourish.astro';
 import Lightbox from '../../components/Lightbox.astro';
+import RichText from '../../components/RichText.astro';
 import { urlFor } from '../../lib/sanity/image';
 import { formatDateFr } from '../../lib/status';
 import { sanityClient } from 'sanity:client';
 import { DOG_SLUGS_QUERY, DOG_BY_SLUG_QUERY } from '../../lib/sanity/queries';
+import { hasRichText } from '../../lib/sanity/richText';
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(DOG_SLUGS_QUERY);
@@ -73,10 +75,10 @@ const stats = [
             <p class="font-display font-bold text-base text-cream/85 mb-5">
               {dog.birthDate && `${formatDateFr(dog.birthDate)} — `}{formatDateFr(dog.deathDate)}
             </p>
-            {dog.memorialText && (
-              <p class="font-display italic text-lg leading-relaxed text-cream max-w-lg mx-auto">
-                "{dog.memorialText}"
-              </p>
+            {hasRichText(dog.memorialText) && (
+              <div class="memorial-quote font-display italic text-lg leading-relaxed text-cream max-w-lg mx-auto">
+                <RichText value={dog.memorialText} />
+              </div>
             )}
             <Flourish width={70} height={10} class="mx-auto mt-6" />
           </div>
@@ -125,7 +127,12 @@ const stats = [
             {dog.gallery.map((item: any) =>
               item._type === 'file' ? (
                 item.url && (
-                  <video src={item.url} controls preload="metadata" class="w-full block bg-ink" />
+                  <video
+                    src={item.url}
+                    controls
+                    preload="metadata"
+                    class="w-full block bg-ink break-inside-avoid [transform:translateZ(0)]"
+                  />
                 )
               ) : (
                 <a
@@ -145,3 +152,14 @@ const stats = [
   </article>
   <Lightbox />
 </Layout>
+
+<style>
+  /* memorialText is rich text (can hold several paragraphs), so the quote marks are added
+   * around the first/last paragraph instead of being literal characters in the markup. */
+  .memorial-quote p:first-child::before {
+    content: '"';
+  }
+  .memorial-quote p:last-child::after {
+    content: '"';
+  }
+</style>

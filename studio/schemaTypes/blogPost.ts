@@ -3,6 +3,7 @@ import {HeicImageInput} from '../components/HeicImageInput'
 import {galleryOf} from '../lib/galleryField'
 import {isUniqueSlug} from '../lib/isUniqueSlug'
 import {requireImageAsset} from '../lib/requireImageAsset'
+import {richTextStylesWithCenter} from '../lib/richText'
 
 export default defineType({
   name: 'blogPost',
@@ -40,7 +41,7 @@ export default defineType({
       title: 'Contenu',
       type: 'array',
       of: [
-        {type: 'block'},
+        {type: 'block', styles: richTextStylesWithCenter},
         {type: 'image', options: {hotspot: true}, components: {input: HeicImageInput}, validation: requireImageAsset},
       ],
     }),

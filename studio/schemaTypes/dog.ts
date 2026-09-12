@@ -5,6 +5,7 @@ import {galleryOf} from '../lib/galleryField'
 import {isUniqueSlug} from '../lib/isUniqueSlug'
 import {requireFileAsset} from '../lib/requireFileAsset'
 import {requireImageAsset} from '../lib/requireImageAsset'
+import {descriptionRichTextOf} from '../lib/richText'
 
 export default defineType({
   name: 'dog',
@@ -32,7 +33,8 @@ export default defineType({
     defineField({
       name: 'memorialText',
       title: 'Texte en hommage',
-      type: 'text',
+      type: 'array',
+      of: descriptionRichTextOf,
       description: "Affiché uniquement si une date de décès est renseignée — un hommage sur la fiche du chien, pour ne jamais l'oublier.",
       hidden: ({document}) => !document?.deathDate,
     }),

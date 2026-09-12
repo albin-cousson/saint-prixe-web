@@ -1,11 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DogCard from '../components/dogs/DogCard.astro';
+import RichText from '../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { DOGS_BY_SEX_QUERY, NOS_MALES_PAGE_QUERY } from '../lib/sanity/queries';
+import { hasRichText } from '../lib/sanity/richText';
 
 const page = await sanityClient.fetch(NOS_MALES_PAGE_QUERY);
 const dogs = await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Mâle' });
+const hasIntro = hasRichText(page?.intro);
 ---
 
 <Layout
@@ -15,10 +18,14 @@ const dogs = await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Mâle' });
 >
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
-      <h1 class:list={['font-display font-bold text-3xl md:text-4xl text-center', page?.intro ? 'mb-3' : 'mb-14']}>
+      <h1 class:list={['font-display font-bold text-3xl md:text-4xl text-center', hasIntro ? 'mb-3' : 'mb-14']}>
         {page?.title || 'Nos mâles Bearded Collies'}
       </h1>
-      {page?.intro && <p class="text-center text-muted max-w-2xl mx-auto mb-14">{page.intro}</p>}
+      {hasIntro && (
+        <div class="text-center text-muted max-w-2xl mx-auto mb-14">
+          <RichText value={page.intro} />
+        </div>
+      )}
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {dogs.map((d: any) => (
           <DogCard

@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DogCard from '../components/dogs/DogCard.astro';
+import RichText from '../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { DOGS_BY_SEX_QUERY, NOS_CHIENS_PAGE_QUERY } from '../lib/sanity/queries';
+import { hasRichText } from '../lib/sanity/richText';
 
 const page = await sanityClient.fetch(NOS_CHIENS_PAGE_QUERY);
 const males = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Mâle' })).slice(0, 3);
@@ -17,9 +19,13 @@ const femelles = (await sanityClient.fetch(DOGS_BY_SEX_QUERY, { sex: 'Femelle' }
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
       <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Bearded Collies'}</h1>
-      <p class="text-center text-muted max-w-2xl mx-auto mb-3">
-        {page?.intro || "Nos Bearded Collies sont au cœur de notre passion et de nos projets d'élevage, au sein de notre élevage familial en Alsace (Haut-Rhin)."}
-      </p>
+      <div class="text-center text-muted max-w-2xl mx-auto mb-3">
+        {hasRichText(page?.intro) ? (
+          <RichText value={page.intro} />
+        ) : (
+          <p>Nos Bearded Collies sont au cœur de notre passion et de nos projets d'élevage, au sein de notre élevage familial en Alsace (Haut-Rhin).</p>
+        )}
+      </div>
       <p class="text-center mb-14">
         <a href="/guide-bearded-collie" class="text-sm text-gold-text font-semibold hover:text-gold-deep transition-colors">
           En savoir plus sur la race (origines, caractère, entretien) ›

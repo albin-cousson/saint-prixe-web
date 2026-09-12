@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {richTextStylesWithCenter} from '../lib/richText'
 
 /** Reusable flexible content block used by the simpler pages (About, Contact, Portfolio, Inquiry). */
 export default defineType({
@@ -11,7 +12,7 @@ export default defineType({
       name: 'body',
       title: 'Contenu',
       type: 'array',
-      of: [{type: 'block'}],
+      of: [{type: 'block', styles: richTextStylesWithCenter}],
     }),
     defineField({name: 'image', title: 'Image', type: 'image', options: {hotspot: true}}),
     defineField({name: 'ctaLabel', title: 'Texte du bouton "en savoir plus"', type: 'string'}),

@@ -1,8 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/actualites/PostCard.astro';
+import RichText from '../../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { BLOG_POSTS_QUERY, DOG_SLUGS_QUERY, ACTUALITES_PAGE_QUERY } from '../../lib/sanity/queries';
+import { hasRichText } from '../../lib/sanity/richText';
 
 const page = await sanityClient.fetch(ACTUALITES_PAGE_QUERY);
 const allPosts = await sanityClient.fetch(BLOG_POSTS_QUERY);
@@ -36,9 +38,13 @@ const years = [...groups.keys()].sort((a, b) => {
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
       <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Actualités'}</h1>
-      <p class="text-center text-muted max-w-2xl mx-auto mb-10">
-        {page?.intro || 'Retrouvez ici nos résultats et actualités en expositions, régulièrement mis à jour.'}
-      </p>
+      <div class="text-center text-muted max-w-2xl mx-auto mb-10">
+        {hasRichText(page?.intro) ? (
+          <RichText value={page.intro} />
+        ) : (
+          <p>Retrouvez ici nos résultats et actualités en expositions, régulièrement mis à jour.</p>
+        )}
+      </div>
 
       <div class="max-w-2xl mx-auto mb-14 flex flex-col sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-8">
         <div class="relative w-full sm:w-56">

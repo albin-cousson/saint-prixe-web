@@ -16,6 +16,7 @@
     "@astrojs/react": "^6.0.2",
     "@astrojs/sitemap": "^3.7.3",
     "@netlify/blobs": "^11.0.3",
+    "@portabletext/react": "^7.0.1",
     "@sanity/astro": "^3.5.0",
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/vite": "^4.2.1",
@@ -36,7 +37,9 @@
     "vite": "^8.0.13"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@sanity/client": "^7.26.0",
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "typescript": "^6.0.3"
   }
 }

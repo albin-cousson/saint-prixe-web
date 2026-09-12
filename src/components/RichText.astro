@@ -1,0 +1,22 @@
+---
+// Thin wrapper around astro-portabletext's <PortableText> that adds the "Centré" block style
+// used across every description-style Sanity field (see studio/lib/richText.ts) — bold,
+// italic and underline are already handled by the library's defaults, only alignment needs a
+// custom renderer. Use this instead of <PortableText> directly for any rich-text field.
+// A plain string is rendered as one paragraph: fields migrated from `text` keep their old
+// string value until re-saved in Studio (see src/lib/sanity/richText.ts).
+import { PortableText } from 'astro-portabletext';
+import CenteredBlock from './portabletext/CenteredBlock.astro';
+
+interface Props {
+  value: any;
+}
+
+const { value } = Astro.props;
+---
+
+{typeof value === 'string' ? (
+  <p>{value}</p>
+) : (
+  <PortableText value={value} components={{ block: { center: CenteredBlock } }} />
+)}

@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Flourish from '../components/Flourish.astro';
-import { PortableText } from 'astro-portabletext';
+import RichText from '../components/RichText.astro';
 import { urlFor } from '../lib/sanity/image';
 import { sanityClient } from 'sanity:client';
 import { ABOUT_PAGE_QUERY } from '../lib/sanity/queries';
@@ -27,7 +27,7 @@ const lastSectionIsAlt = rest.length > 0 ? (rest.length - 1) % 2 === 0 : false;
         )}
         <Flourish class="mx-auto mb-8" />
         <div class="prose-body text-lg leading-relaxed text-muted">
-          <PortableText value={page.intro} />
+          <RichText value={page.intro} />
         </div>
       </div>
     </section>
@@ -60,7 +60,7 @@ const lastSectionIsAlt = rest.length > 0 ? (rest.length - 1) % 2 === 0 : false;
           </div>
           <div class="flex-1 min-w-0">
             <div class:list={['prose-body prose-body--dropcap text-[17px] leading-relaxed text-center lg:text-left', mutedClass]}>
-              <PortableText value={s.body} />
+              <RichText value={s.body} />
             </div>
             {s.ctaHref && (
               <p class="text-center lg:text-left mt-4">

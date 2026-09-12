@@ -2,6 +2,7 @@ import {defineField, defineType} from 'sanity'
 import {HeicImageInput} from '../components/HeicImageInput'
 import {galleryOf} from '../lib/galleryField'
 import {requireImageAsset} from '../lib/requireImageAsset'
+import {descriptionRichTextOf} from '../lib/richText'
 
 export default defineType({
   name: 'chiot',
@@ -45,7 +46,7 @@ export default defineType({
       options: {list: ['Disponible', 'Réservé', 'Vendu']},
       initialValue: 'Disponible',
     }),
-    defineField({name: 'description', title: 'Description', type: 'text'}),
+    defineField({name: 'description', title: 'Description', type: 'array', of: descriptionRichTextOf}),
   ],
   preview: {
     select: {title: 'title', subtitle: 'status', media: 'photo'},

@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Flourish from '../../components/Flourish.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import PostCard from '../../components/actualites/PostCard.astro';
-import { PortableText } from 'astro-portabletext';
+import RichText from '../../components/RichText.astro';
 import { urlFor } from '../../lib/sanity/image';
 import { formatDateFr } from '../../lib/status';
 import { sanityClient } from 'sanity:client';
@@ -72,7 +72,7 @@ const articleSchema = {
         <Flourish width={90} height={12} class="mb-8" />
 
         <div class="prose-body prose-body--dropcap text-[15px] leading-relaxed text-muted">
-          <PortableText value={post.body} />
+          <RichText value={post.body} />
         </div>
 
         {post.gallery && post.gallery.length > 0 && (
@@ -82,7 +82,12 @@ const articleSchema = {
               {post.gallery.map((item: any) =>
                 item._type === 'file' ? (
                   item.url && (
-                    <video src={item.url} controls preload="metadata" class="w-full block bg-ink" />
+                    <video
+                      src={item.url}
+                      controls
+                      preload="metadata"
+                      class="w-full block bg-ink break-inside-avoid [transform:translateZ(0)]"
+                    />
                   )
                 ) : (
                   <a

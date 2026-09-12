@@ -3,6 +3,7 @@ import Flourish from '../Flourish.astro';
 import MariageCard from '../mariages/MariageCard.astro';
 import DogCard from '../dogs/DogCard.astro';
 import PostCard from '../actualites/PostCard.astro';
+import { richTextToPlainText } from '../../lib/sanity/richText';
 
 interface Props {
   section: any;
@@ -71,7 +72,7 @@ const outlineBtnClass = isAlt
             dogGroomPhoto={m.dogGroomPhoto}
             dogBrideName={m.dogBrideName}
             dogBridePhoto={m.dogBridePhoto}
-            description={m.description}
+            description={richTextToPlainText(m.description)}
             litterDate={m.litterDate}
             puppies={m.puppies || []}
             ctaLabel={mariageCardCtaLabel}

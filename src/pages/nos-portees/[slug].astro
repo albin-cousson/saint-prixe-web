@@ -4,10 +4,12 @@ import Flourish from '../../components/Flourish.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import CoupleMedallion from '../../components/mariages/CoupleMedallion.astro';
 import PuppyCarousel from '../../components/mariages/PuppyCarousel';
+import RichText from '../../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { urlFor } from '../../lib/sanity/image';
 import { formatDateFr } from '../../lib/status';
 import { MARIAGE_SLUGS_QUERY, MARIAGE_BY_SLUG_QUERY, NOS_PORTEES_PAGE_QUERY } from '../../lib/sanity/queries';
+import { hasRichText, richTextToPlainText } from '../../lib/sanity/richText';
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(MARIAGE_SLUGS_QUERY);
@@ -27,7 +29,7 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
 
 <Layout
   title={`${mariage.dogGroomName} × ${mariage.dogBrideName} — Chiots Bearded Collie`}
-  description={mariage.description || `Chiots Bearded Collie LOF de ${pairName} — élevage De Saint Prixe, en Alsace (Haut-Rhin).`}
+  description={richTextToPlainText(mariage.description) || `Chiots Bearded Collie LOF de ${pairName} — élevage De Saint Prixe, en Alsace (Haut-Rhin).`}
   image={mariage.dogGroomPhoto ? urlFor(mariage.dogGroomPhoto)?.width(1200).height(630).url() : undefined}
   breadcrumbs={[
     { name: 'Nos Portées', path: '/nos-portees' },
@@ -58,8 +60,10 @@ const litterIsFuture = mariage.litterDate ? new Date(mariage.litterDate).getTime
         </h1>
         <Flourish width={140} height={16} class="mx-auto mb-4" />
 
-        {mariage.description && (
-          <p class="max-w-[60ch] mx-auto text-[15px] leading-relaxed text-muted mb-2">{mariage.description}</p>
+        {hasRichText(mariage.description) && (
+          <div class="max-w-[60ch] mx-auto text-[15px] leading-relaxed text-muted mb-2">
+            <RichText value={mariage.description} />
+          </div>
         )}
 
         {mariage.litterDate && (

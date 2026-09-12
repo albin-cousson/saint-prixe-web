@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {richTextStylesWithCenter} from '../lib/richText'
 
 export default defineType({
   name: 'aboutPage',
@@ -10,7 +11,7 @@ export default defineType({
       name: 'intro',
       title: "Texte d'introduction",
       type: 'array',
-      of: [{type: 'block'}],
+      of: [{type: 'block', styles: richTextStylesWithCenter}],
     }),
     defineField({name: 'sections', title: 'Sections', type: 'array', of: [{type: 'pageSection'}]}),
     defineField({

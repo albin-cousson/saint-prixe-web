@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {descriptionRichTextOf} from '../lib/richText'
 
 export default defineType({
   name: 'nosPorteesPage',
@@ -6,7 +7,7 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({name: 'title', title: 'Titre', type: 'string'}),
-    defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
+    defineField({name: 'intro', title: "Texte d'introduction", type: 'array', of: descriptionRichTextOf}),
     defineField({
       name: 'cardCtaLabel',
       title: 'Texte du bouton "Découvrir la portée" (sur les cartes)',

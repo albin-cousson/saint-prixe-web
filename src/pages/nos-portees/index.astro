@@ -1,8 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import MariageCard from '../../components/mariages/MariageCard.astro';
+import RichText from '../../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { MARIAGES_WITH_CHIOTS_QUERY, NOS_PORTEES_PAGE_QUERY } from '../../lib/sanity/queries';
+import { hasRichText, richTextToPlainText } from '../../lib/sanity/richText';
 
 const page = await sanityClient.fetch(NOS_PORTEES_PAGE_QUERY);
 const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
@@ -16,9 +18,13 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
   <section class="bg-cream px-6 lg:px-10 py-16 md:py-20">
     <div class="max-w-7xl mx-auto">
       <h1 class="font-display font-bold text-3xl md:text-4xl text-center mb-3">{page?.title || 'Nos Portées de Bearded Collie'}</h1>
-      <p class="text-center text-muted max-w-2xl mx-auto mb-14">
-        {page?.intro || 'Découvrez nos couples et les chiots disponibles, portée par portée.'}
-      </p>
+      <div class="text-center text-muted max-w-2xl mx-auto mb-14">
+        {hasRichText(page?.intro) ? (
+          <RichText value={page.intro} />
+        ) : (
+          <p>Découvrez nos couples et les chiots disponibles, portée par portée.</p>
+        )}
+      </div>
 
       {mariages.length === 0 ? (
         <p class="text-center text-muted-2 italic py-10">
@@ -40,7 +46,7 @@ const mariages = await sanityClient.fetch(MARIAGES_WITH_CHIOTS_QUERY);
               dogGroomPhoto={m.dogGroomPhoto}
               dogBrideName={m.dogBrideName}
               dogBridePhoto={m.dogBridePhoto}
-              description={m.description}
+              description={richTextToPlainText(m.description)}
               litterDate={m.litterDate}
               puppies={m.puppies || []}
               ctaLabel={page?.cardCtaLabel}

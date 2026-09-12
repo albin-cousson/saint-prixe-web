@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Flourish from '../components/Flourish.astro';
-import { PortableText } from 'astro-portabletext';
+import RichText from '../components/RichText.astro';
 import { urlFor } from '../lib/sanity/image';
 import { sanityClient } from 'sanity:client';
 import { GUIDE_PAGE_QUERY } from '../lib/sanity/queries';
+import { hasRichText } from '../lib/sanity/richText';
 
 const page = await sanityClient.fetch(GUIDE_PAGE_QUERY);
 
@@ -58,12 +59,13 @@ const FALLBACK_SECTIONS = [
         {page?.title || 'Guide du Bearded Collie'}
       </h1>
       <Flourish class="mx-auto mb-6" />
-      <p class="text-center text-muted max-w-2xl mx-auto mb-16">
-        {
-          page?.intro ||
-            "Avant d'accueillir un Bearded Collie, mieux vaut connaître la race : d'où elle vient, quel caractère l'anime, et ce que son entretien demande au quotidien."
-        }
-      </p>
+      <div class="text-center text-muted max-w-2xl mx-auto mb-16">
+        {hasRichText(page?.intro) ? (
+          <RichText value={page.intro} />
+        ) : (
+          <p>Avant d'accueillir un Bearded Collie, mieux vaut connaître la race : d'où elle vient, quel caractère l'anime, et ce que son entretien demande au quotidien.</p>
+        )}
+      </div>
 
       <div class="space-y-14">
         {sanitySections.length > 0
@@ -80,7 +82,7 @@ const FALLBACK_SECTIONS = [
                   </div>
                 )}
                 <div class="prose-body text-[15px] leading-relaxed text-muted">
-                  <PortableText value={s.body} />
+                  <RichText value={s.body} />
                 </div>
                 {s.ctaHref && (
                   <p class="mt-3">

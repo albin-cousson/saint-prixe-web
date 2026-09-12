@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {descriptionRichTextOf} from '../lib/richText'
 
 export default defineType({
   name: 'faqPage',
@@ -6,7 +7,7 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({name: 'title', title: 'Titre', type: 'string'}),
-    defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
+    defineField({name: 'intro', title: "Texte d'introduction", type: 'array', of: descriptionRichTextOf}),
     defineField({
       name: 'questions',
       title: 'Questions fréquentes',
@@ -20,7 +21,13 @@ export default defineType({
           title: 'Question',
           fields: [
             {name: 'question', title: 'Question', type: 'string', validation: (Rule: any) => Rule.required()},
-            {name: 'answer', title: 'Réponse', type: 'text', validation: (Rule: any) => Rule.required()},
+            {
+              name: 'answer',
+              title: 'Réponse',
+              type: 'array',
+              of: descriptionRichTextOf,
+              validation: (Rule: any) => Rule.required(),
+            },
           ],
           preview: {select: {title: 'question'}},
         },

@@ -3,6 +3,7 @@ import {HeicImageInput} from '../components/HeicImageInput'
 import {galleryOf} from '../lib/galleryField'
 import {isUniqueSlug} from '../lib/isUniqueSlug'
 import {requireImageAsset} from '../lib/requireImageAsset'
+import {descriptionRichTextOf} from '../lib/richText'
 
 export default defineType({
   name: 'mariage',
@@ -48,7 +49,7 @@ export default defineType({
       type: 'array',
       of: galleryOf,
     }),
-    defineField({name: 'description', title: 'Description', type: 'text'}),
+    defineField({name: 'description', title: 'Description', type: 'array', of: descriptionRichTextOf}),
   ],
   preview: {
     select: {title: 'title', media: 'dogGroomPhoto'},

@@ -1,5 +1,6 @@
 import {defineField, defineType} from 'sanity'
 import {galleryOf} from '../lib/galleryField'
+import {descriptionRichTextOf} from '../lib/richText'
 
 export default defineType({
   name: 'portfolioPage',
@@ -7,7 +8,7 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({name: 'title', title: 'Titre', type: 'string'}),
-    defineField({name: 'intro', title: "Texte d'introduction", type: 'text'}),
+    defineField({name: 'intro', title: "Texte d'introduction", type: 'array', of: descriptionRichTextOf}),
     defineField({
       name: 'images',
       title: 'Galerie (photos et vidéos)',

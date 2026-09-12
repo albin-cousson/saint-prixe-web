@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Flourish from '../components/Flourish.astro';
+import RichText from '../components/RichText.astro';
 import { sanityClient } from 'sanity:client';
 import { SITE_SETTINGS_QUERY, CONTACT_PAGE_QUERY } from '../lib/sanity/queries';
+import { hasRichText } from '../lib/sanity/richText';
 
 const page = await sanityClient.fetch(CONTACT_PAGE_QUERY);
 const settings = await sanityClient.fetch(SITE_SETTINGS_QUERY);
@@ -27,9 +29,13 @@ const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
       <div class="text-center mb-14">
         <h1 class="font-display font-bold text-3xl md:text-4xl mb-3">{page?.title || 'Contact'}</h1>
         <Flourish width={90} height={12} class="mx-auto mb-4" />
-        <p class="text-sm text-muted max-w-md mx-auto">
-          {page?.intro || 'Une question sur nos chiens ou une prochaine portée ? Nous répondons avec plaisir, par e-mail ou par téléphone.'}
-        </p>
+        <div class="text-sm text-muted max-w-md mx-auto">
+          {hasRichText(page?.intro) ? (
+            <RichText value={page.intro} />
+          ) : (
+            <p>Une question sur nos chiens ou une prochaine portée ? Nous répondons avec plaisir, par e-mail ou par téléphone.</p>
+          )}
+        </div>
         <p class="text-sm mt-2">
           <a href="/faq" class="text-gold-text font-semibold hover:text-gold-deep transition-colors">
             Voir la FAQ ›
